@@ -5,7 +5,12 @@
 /.vs/BlazorMedia
 /BlazorMedia/.vs/BlazorMedia
 /BlazorMedia/bin/Debug
+/BlazorMedia/bin/Release
 /BlazorMedia/node_modules
 /BlazorMedia/obj/Debug
+/BlazorMedia/obj/Release
+/BlazorMedia/obj/*
+/BlazorMedia/obj
 /BlazorMedia.Demo/obj
 /BlazorMedia.Demo/bin/Debug/netcoreapp3.0
+/BlazorMedia.Demo/bin/Release/netcoreapp3.0
