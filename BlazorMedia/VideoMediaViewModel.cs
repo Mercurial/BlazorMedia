@@ -48,7 +48,8 @@ namespace BlazorMedia
         [JSInvokable]
         public async void ReceiveData(byte[] data)
         {
-            await OnDataReceived.InvokeAsync(data);
+            if(OnDataReceived.HasDelegate)
+                await OnDataReceived.InvokeAsync(data);
         }
     }
 }
