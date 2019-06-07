@@ -10,10 +10,13 @@
     <LangVersion>7.3</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Rory Clark Manuelle Alesna</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Mercurial/BlazorMedia</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Mercurial/BlazorMedia</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
