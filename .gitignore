@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/BlazorMedia
+/BlazorMedia/.vs/BlazorMedia
+/BlazorMedia/bin/Debug
+/BlazorMedia/node_modules
+/BlazorMedia/obj/Debug
+/BlazorMedia.Demo/obj
+/BlazorMedia.Demo/bin/Debug/netcoreapp3.0

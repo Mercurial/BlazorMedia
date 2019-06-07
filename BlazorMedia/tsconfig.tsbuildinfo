@@ -1,0 +1,94 @@
+{
+  "program": {
+    "fileInfos": {
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "c8665e66018917580e71792b91022bcaf53fb946fab4aaf8dfb0738ed564db88",
+        "signature": "c8665e66018917580e71792b91022bcaf53fb946fab4aaf8dfb0738ed564db88"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "6994c583b66862deca24d7bbf77297d95b9d3da8160dbd9beef6b847cf7c1376",
+        "signature": "6994c583b66862deca24d7bbf77297d95b9d3da8160dbd9beef6b847cf7c1376"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "384f66a3422d80014c51de2682159bb26f1e35854029880ccd5f6d1f00e6a36d",
+        "signature": "384f66a3422d80014c51de2682159bb26f1e35854029880ccd5f6d1f00e6a36d"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0",
+        "signature": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3",
+        "signature": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "4d1f39313a169b8599b8817688f504b56ba8204c2ebafd03f66ff77ddb1899a4",
+        "signature": "4d1f39313a169b8599b8817688f504b56ba8204c2ebafd03f66ff77ddb1899a4"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "7c07d934680d0e33275a44d22fb11a4ff31d46c8c26a8d056828a478753f1efe",
+        "signature": "7c07d934680d0e33275a44d22fb11a4ff31d46c8c26a8d056828a478753f1efe"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "f:/projects/blazormedia/blazormedia/content/blazormedia.ts": {
+        "version": "dfd51891cfde457aad1a2af58c7331ba5f28b419d0f35856ce636a4240b81cae",
+        "signature": "d1a014373f86eb86d16ada7b569a6fd260b143ba47d565fa8ccd2732543c3772"
+      },
+      "f:/projects/blazormedia/blazormedia/node_modules/@types/dom-mediacapture-record/index.d.ts": {
+        "version": "0e7d06c62b1683fb17046f0c1db365c21c199470864761d6a2bb8e63767fe73d",
+        "signature": "0e7d06c62b1683fb17046f0c1db365c21c199470864761d6a2bb8e63767fe73d"
+      }
+    },
+    "options": {
+      "target": 1,
+      "module": 1,
+      "lib": [
+        "lib.es2015.d.ts",
+        "lib.dom.d.ts"
+      ],
+      "rootDir": "F:/Projects/BlazorMedia/BlazorMedia/content",
+      "incremental": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "configFilePath": "F:/Projects/BlazorMedia/BlazorMedia/tsconfig.json"
+    },
+    "referencedMap": {},
+    "exportedModulesMap": {},
+    "semanticDiagnosticsPerFile": [
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es5.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.dom.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "c:/users/clark/appdata/roaming/nvm/v12.2.0/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "f:/projects/blazormedia/blazormedia/node_modules/@types/dom-mediacapture-record/index.d.ts",
+      "f:/projects/blazormedia/blazormedia/content/blazormedia.ts"
+    ]
+  },
+  "version": "3.4.5"
+}
