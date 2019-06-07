@@ -15,10 +15,18 @@ In your Component
 }
 ```
 **Code Behind**
+
 ...
 ```C#
 if (!BlazorMediaAPI.Initialized)
 {
     await BlazorMediaAPI.InitializeMediaStream(JSRuntime, 640, 480, true);
+}
+```
+
+```C#
+protected void OnDataReceived(byte[] data)
+{
+    Console.WriteLine($"Data Recieved of length: {data.Length}");
 }
 ```
