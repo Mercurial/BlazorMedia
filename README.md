@@ -15,6 +15,7 @@ In your Component
 }
 ```
 **Code Behind**
+
 ...
 ```C#
 if (!BlazorMediaAPI.Initialized)
