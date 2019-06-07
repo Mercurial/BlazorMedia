@@ -24,7 +24,7 @@ if (!BlazorMediaAPI.Initialized)
 }
 ```
 
-```
+```C#
 protected void OnDataReceived(byte[] data)
 {
     Console.WriteLine($"Data Recieved of length: {data.Length}");
