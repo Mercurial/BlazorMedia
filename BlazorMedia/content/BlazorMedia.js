@@ -81,7 +81,6 @@ var BlazorMedia;
                 var mediaRecorder;
                 var _this = this;
                 return __generator(this, function (_a) {
-                    console.log("componentRef", componentRef);
                     if (!BlazorMediaInterop.MediaStream)
                         throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
                     videoElement.srcObject = BlazorMediaInterop.MediaStream;
@@ -96,7 +95,6 @@ var BlazorMedia;
                                 case 1:
                                     uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
                                     buffer = Array.from(uintArr);
-                                    console.log("data to send", buffer);
                                     componentRef.invokeMethodAsync("ReceiveData", buffer);
                                     return [2 /*return*/];
                             }

@@ -45,7 +45,6 @@ namespace BlazorMedia {
         }
 
         static async InitializeVideoElement(videoElement: HTMLVideoElement, componentRef: any) {
-            console.log("componentRef", componentRef);
             if (!BlazorMediaInterop.MediaStream) throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
 
             videoElement.srcObject = BlazorMediaInterop.MediaStream;
@@ -54,7 +53,6 @@ namespace BlazorMedia {
             mediaRecorder.ondataavailable = async (e) => {
                 let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
                 let buffer = Array.from(uintArr);
-                console.log("data to send", buffer);
                 componentRef.invokeMethodAsync("ReceiveData", buffer);
             };
 
