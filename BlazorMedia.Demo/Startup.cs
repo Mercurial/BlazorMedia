@@ -20,10 +20,11 @@ namespace BlazorMedia.Demo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor().AddSignalR().AddHubOptions<ComponentHub>(o =>
+            services.AddServerSideBlazor().AddHubOptions((o) =>
             {
                 o.MaximumReceiveMessageSize = int.MaxValue;
             });
+            services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
         }
 

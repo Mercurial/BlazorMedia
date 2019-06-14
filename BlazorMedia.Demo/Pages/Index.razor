@@ -1,14 +1,48 @@
 ﻿@page "/"
-@using BlazorMedia;
-@inject IJSRuntime JSRuntime
+@using BlazorMedia
+@using System.IO
+@using System.Diagnostics
+@inject IJSRuntime JS
 @inject IComponentContext ComponentContext
 
 @if (BlazorMediaAPI.Initialized)
 {
-    <VideoMedia OnDataReceived="@OnDataReceived" />
+    <VideoMedia OnDataReceived="@OnDataReceived" Timeslice="0" />
 }
-
+<button @onclick="@OnStart">START</button>
 @functions {
+
+    #region Hack to fix https://github.com/aspnet/AspNetCore/issues/11159
+
+    public static object CreateDotNetObjectRefSyncObj = new object();
+
+    protected DotNetObjectRef<T> CreateDotNetObjectRef<T>(T value) where T : class
+    {
+        lock (CreateDotNetObjectRefSyncObj)
+        {
+            JSRuntime.SetCurrentJSRuntime(JS);
+            return DotNetObjectRef.Create(value);
+        }
+    }
+
+    protected void DisposeDotNetObjectRef<T>(DotNetObjectRef<T> value) where T : class
+    {
+        if (value != null)
+        {
+            lock (CreateDotNetObjectRefSyncObj)
+            {
+                JSRuntime.SetCurrentJSRuntime(JS);
+                value.Dispose();
+            }
+        }
+    }
+
+    #endregion
+
+    protected override Task OnInitAsync()
+    {
+        return base.OnInitAsync();
+    }
 
     protected override async Task OnAfterRenderAsync()
     {
@@ -19,15 +53,19 @@
 
         if (!BlazorMediaAPI.Initialized)
         {
-            await BlazorMediaAPI.InitializeMediaStream(JSRuntime, 640, 480, true);
+            await BlazorMediaAPI.InitializeMediaStream(JS, 1024, 768, true);
             this.StateHasChanged();
         }
 
         await base.OnAfterRenderAsync();
     }
 
-    protected void OnDataReceived(byte[] data)
+    protected async void OnDataReceived(byte[] data)
     {
         Console.WriteLine($"Data Recieved of length: {data.Length}");
+    }
+
+    protected void OnStart()
+    {
     }
 }

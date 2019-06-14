@@ -46,7 +46,7 @@ var BlazorMedia;
             if (height === void 0) { height = 480; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
             return __awaiter(this, void 0, void 0, function () {
-                var _a;
+                var tracks, track, _a;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -65,8 +65,13 @@ var BlazorMedia;
                                     },
                                 }
                             };
-                            if (BlazorMediaInterop.MediaStream)
-                                BlazorMediaInterop.MediaStream.stop();
+                            if (BlazorMediaInterop.MediaStream) {
+                                tracks = BlazorMediaInterop.MediaStream.getTracks();
+                                track = void 0;
+                                while (track = tracks.pop()) {
+                                    BlazorMediaInterop.MediaStream.removeTrack(track);
+                                }
+                            }
                             _a = BlazorMediaInterop;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
                         case 1:
@@ -76,16 +81,18 @@ var BlazorMedia;
                 });
             });
         };
-        BlazorMediaInterop.InitializeVideoElement = function (videoElement, componentRef) {
+        BlazorMediaInterop.InitializeVideoElement = function (videoElement, componentRef, timeslice) {
+            if (timeslice === void 0) { timeslice = 0; }
             return __awaiter(this, void 0, void 0, function () {
-                var mediaRecorder;
                 var _this = this;
                 return __generator(this, function (_a) {
                     if (!BlazorMediaInterop.MediaStream)
                         throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
                     videoElement.srcObject = BlazorMediaInterop.MediaStream;
-                    mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
-                    mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                    videoElement.muted = true;
+                    videoElement.volume = 0;
+                    videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
+                    videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
                         var uintArr, _a, buffer;
                         return __generator(this, function (_b) {
                             switch (_b.label) {
@@ -95,12 +102,26 @@ var BlazorMedia;
                                 case 1:
                                     uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
                                     buffer = Array.from(uintArr);
+                                    console.log(buffer);
+                                    componentRef.invokeMethodAsync("Test", "test");
                                     componentRef.invokeMethodAsync("ReceiveData", buffer);
                                     return [2 /*return*/];
                             }
                         });
                     }); };
-                    mediaRecorder.start(0);
+                    videoElement.mediaRecorder.start(timeslice);
+                    return [2 /*return*/];
+                });
+            });
+        };
+        BlazorMediaInterop.SetVideoRecorderTimeslice = function (videoElement, timeslice) {
+            if (timeslice === void 0) { timeslice = 0; }
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (videoElement && videoElement.mediaRecorder) {
+                        videoElement.mediaRecorder.stop();
+                        videoElement.mediaRecorder.start(timeslice);
+                    }
                     return [2 /*return*/];
                 });
             });

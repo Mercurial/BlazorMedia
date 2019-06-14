@@ -1,6 +1,10 @@
 // This file is to show how a library package may provide JavaScript interop features
 // wrapped in a .NET API
 
+interface BlazorMediaVideoElement extends HTMLVideoElement {
+    mediaRecorder: MediaRecorder;
+}
+
 namespace BlazorMedia {
     export class BlazorMediaInterop {
 
@@ -40,23 +44,40 @@ namespace BlazorMedia {
                     },
                 }
             };
-            if (BlazorMediaInterop.MediaStream) BlazorMediaInterop.MediaStream.stop();
+
+            if (BlazorMediaInterop.MediaStream) {
+                let tracks = BlazorMediaInterop.MediaStream.getTracks();
+                let track: MediaStreamTrack | undefined;
+                while (track = tracks.pop()) {
+                    BlazorMediaInterop.MediaStream.removeTrack(track);
+                }
+            }
             BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
         }
 
-        static async InitializeVideoElement(videoElement: HTMLVideoElement, componentRef: any) {
+        static async InitializeVideoElement(videoElement: BlazorMediaVideoElement, componentRef: any, timeslice: number = 0) {
             if (!BlazorMediaInterop.MediaStream) throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
 
             videoElement.srcObject = BlazorMediaInterop.MediaStream;
-            let mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
+            videoElement.muted = true;
+            videoElement.volume = 0;
+            videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
 
-            mediaRecorder.ondataavailable = async (e) => {
+            videoElement.mediaRecorder.ondataavailable = async (e) => {
                 let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
                 let buffer = Array.from(uintArr);
+                console.log(buffer);
+                componentRef.invokeMethodAsync("Test", "test");
                 componentRef.invokeMethodAsync("ReceiveData", buffer);
             };
+            videoElement.mediaRecorder.start(timeslice);
+        }
 
-            mediaRecorder.start(0);
+        static async SetVideoRecorderTimeslice(videoElement: BlazorMediaVideoElement, timeslice: number = 0) {
+            if (videoElement && videoElement.mediaRecorder) {
+                videoElement.mediaRecorder.stop();
+                videoElement.mediaRecorder.start(timeslice);
+            }
         }
     }
 }
