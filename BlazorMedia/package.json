@@ -4,11 +4,12 @@
   "description": "",
   "main": "content/BlazorMedia.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/dom-mediacapture-record": "^1.0.1"
+    "@types/dom-mediacapture-record": "^1.0.1",
+    "typescript": "^3.7.4"
   }
 }

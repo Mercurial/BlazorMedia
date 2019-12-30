@@ -12,6 +12,6 @@
 /BlazorMedia/obj/*
 /BlazorMedia/obj
 /BlazorMedia.Demo/obj
-/BlazorMedia.Demo/bin/Debug/netcoreapp3.0
-/BlazorMedia.Demo/bin/Release/netcoreapp3.0
+/BlazorMedia.Demo/bin/
+/BlazorMedia.Demo/bin/
 /.vs

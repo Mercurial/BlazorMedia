@@ -12,15 +12,14 @@ namespace BlazorMedia
     {
         [Inject]
         IJSRuntime JS { get; set; }
-        [Inject]
-        IComponentContext ComponentContext { get; set; }
+
         bool IsInitialized { get; set; }
-        protected ElementRef VideoElementRef { get; set; }
+        protected ElementReference VideoElementRef { get; set; }
         [Parameter]
-        private EventCallback<byte[]> OnDataReceived { get; set; }
+        public EventCallback<byte[]> OnDataReceived { get; set; }
         private int _timeslice = 0;
         [Parameter]
-        private int Timeslice
+        public int Timeslice
         {
             get
             {
@@ -36,50 +35,14 @@ namespace BlazorMedia
             }
         }
 
-        #region Hack to fix https://github.com/aspnet/AspNetCore/issues/11159
-
-        public static object CreateDotNetObjectRefSyncObj = new object();
-
-        protected DotNetObjectRef<T> CreateDotNetObjectRef<T>(T value) where T : class
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            lock (CreateDotNetObjectRefSyncObj)
-            {
-                JSRuntime.SetCurrentJSRuntime(JS);
-                return DotNetObjectRef.Create(value);
-            }
-        }
-
-        protected void DisposeDotNetObjectRef<T>(DotNetObjectRef<T> value) where T : class
-        {
-            if (value != null)
-            {
-                lock (CreateDotNetObjectRefSyncObj)
-                {
-                    JSRuntime.SetCurrentJSRuntime(JS);
-                    value.Dispose();
-                }
-            }
-        }
-
-        #endregion
-
-        protected override void OnInit()
-        {
-            IsInitialized = false;
-            base.OnInit();
-        }
-
-        protected override async Task OnAfterRenderAsync()
-        {
-            if (!ComponentContext.IsConnected) return;
-
-            if(!IsInitialized)
+            if(firstRender)
             {
                 await InitializeComponent();
-                IsInitialized = true;
             }
 
-            await base.OnAfterRenderAsync();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         protected async Task InitializeComponent()
@@ -87,7 +50,7 @@ namespace BlazorMedia
             await JS.InvokeAsync<dynamic>(
                 "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
                 VideoElementRef,
-                CreateDotNetObjectRef(this),
+                DotNetObjectReference.Create(this),
                 Timeslice);
         }
 
@@ -98,12 +61,6 @@ namespace BlazorMedia
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
             if (OnDataReceived.HasDelegate)
                 await OnDataReceived.InvokeAsync(buffer);
-        }
-
-        [JSInvokable]
-        public void Test(string message)
-        {
-            Console.WriteLine(message);
         }
     }
 }
