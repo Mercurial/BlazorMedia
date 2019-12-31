@@ -9,7 +9,7 @@ A Blazor Library for Interacting with [Browser Media Streaming APIs](https://dev
 
 Command Line
 ```
-dotnet add package BlazorMedia --version 0.2.7.1
+dotnet add package BlazorMedia
 ```
 
 In your Component
