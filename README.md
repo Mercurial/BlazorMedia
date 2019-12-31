@@ -1,6 +1,6 @@
 [![Build Status](https://dev.azure.com/rawriclark/BlazorMedia/_apis/build/status/BlazorMedia-CI?branchName=master)](https://dev.azure.com/rawriclark/BlazorMedia/_build/latest?definitionId=1&branchName=master)
 
-[![Nuget](https://www.nuget.org/packages/BlazorMedia/)](https://img.shields.io/nuget/v/BlazorMedia)
+[![Nuget](https://img.shields.io/nuget/v/BlazorMedia)](https://www.nuget.org/packages/BlazorMedia/)
 
 # BlazorMedia
 Blazor Library for Interacting with Browser Media Streaming APIs
