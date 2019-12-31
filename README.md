@@ -3,7 +3,7 @@
 # BlazorMedia
 Open Source Media Capture API and Components for Blazor
 
-Blazor Library for Interacting with Browser Media Streaming APIs
+A Blazor Library for Interacting with [Browser Media Streaming APIs](https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API)
 
 # How to use
 
