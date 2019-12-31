@@ -23,7 +23,7 @@ if (!BlazorMediaAPI.Initialized)
     await BlazorMediaAPI.InitializeMediaStream(JSRuntime, 640, 480, true);
 }
 ```
-z
+
 ```C#
 protected void OnDataReceived(byte[] data)
 {
