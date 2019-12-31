@@ -13,9 +13,6 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: gitmirror@0
-  inputs:
-    GitRepoUrl: 'https://github.com/Mercurial/BlazorMedia/'
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
