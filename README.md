@@ -7,7 +7,6 @@ In your Component
 ```C#
 @using BlazorMedia;
 ```
-...
 ```C#
 @if (BlazorMediaAPI.Initialized)
 {
@@ -16,7 +15,6 @@ In your Component
 ```
 **Code Behind**
 
-...
 ```C#
 if (!BlazorMediaAPI.Initialized)
 {
