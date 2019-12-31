@@ -1,7 +1,7 @@
 {
   "Configurations": {
     "Debug": {
-      "BumpPatch": true
+        "BumpPatch": true
     },
     
     "Release": {
