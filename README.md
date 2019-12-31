@@ -5,7 +5,7 @@ Blazor Library for Interacting with Browser Media Streaming APIs
 
 In your Component
 ```C#
-@using BlazorMedia;
+@using BlazorMedia
 ```
 ```C#
 @if (BlazorMediaAPI.Initialized)
