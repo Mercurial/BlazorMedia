@@ -45,7 +45,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'BlazorMedia/'
-    Contents: '**.config'
+    Contents: '**.config.temp'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     CleanTargetFolder: true
     OverWrite: true
