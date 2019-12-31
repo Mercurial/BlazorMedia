@@ -71,6 +71,13 @@ namespace BlazorMedia {
             videoElement.mediaRecorder.start(timeslice);
         }
 
+        static async DisposeVideoElement(videoElement: BlazorMediaVideoElement) {
+            if(videoElement && videoElement.mediaRecorder)
+            {
+                videoElement.mediaRecorder.stop();
+            }
+        }
+
         static async SetVideoRecorderTimeslice(videoElement: BlazorMediaVideoElement, timeslice: number = 0) {
             if (videoElement && videoElement.mediaRecorder) {
                 videoElement.mediaRecorder.stop();

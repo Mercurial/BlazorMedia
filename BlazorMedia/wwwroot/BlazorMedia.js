@@ -113,6 +113,16 @@ var BlazorMedia;
                 });
             });
         };
+        BlazorMediaInterop.DisposeVideoElement = function (videoElement) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (videoElement && videoElement.mediaRecorder) {
+                        videoElement.mediaRecorder.stop();
+                    }
+                    return [2 /*return*/];
+                });
+            });
+        };
         BlazorMediaInterop.SetVideoRecorderTimeslice = function (videoElement, timeslice) {
             if (timeslice === void 0) { timeslice = 0; }
             return __awaiter(this, void 0, void 0, function () {

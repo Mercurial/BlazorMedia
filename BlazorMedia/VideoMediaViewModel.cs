@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace BlazorMedia
 {
-    public class VideoMediaViewModel : ComponentBase
+    public class VideoMediaViewModel : ComponentBase, IDisposable
     {
         [Inject]
         IJSRuntime JS { get; set; }
@@ -61,6 +61,20 @@ namespace BlazorMedia
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
             if (OnDataReceived.HasDelegate)
                 await OnDataReceived.InvokeAsync(buffer);
+        }
+
+        public async void Dispose()
+        {
+            try
+            {
+                await JS.InvokeAsync<dynamic>(
+                    "BlazorMedia.BlazorMediaInterop.DisposeVideoElement",
+                    VideoElementRef);
+            }
+            catch 
+            {
+                // Page has been reloaded, API is not available
+            }
         }
     }
 }
