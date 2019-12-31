@@ -21,6 +21,15 @@ steps:
     packageType: 'sdk'
     version: '3.1.100'
 
+- task: UseNode@1
+  inputs:
+    version: '13.x'
+    checkLatest: true
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
