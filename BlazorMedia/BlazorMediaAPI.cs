@@ -13,6 +13,6 @@ namespace BlazorMedia
         {
             await JSRuntime.InvokeAsync<dynamic>("BlazorMedia.BlazorMediaInterop.InitializeMediaStream", width, height, canCaptureAudio);
             BlazorMediaAPI.Initialized = true;
-        }
+        } 
     }
 }
