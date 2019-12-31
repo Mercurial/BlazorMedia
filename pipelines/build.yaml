@@ -42,6 +42,14 @@ steps:
     CleanTargetFolder: true
     OverWrite: true
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'BlazorMedia/'
+    Contents: '**.config'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+    OverWrite: true
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
