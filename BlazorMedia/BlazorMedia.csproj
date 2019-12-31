@@ -11,7 +11,7 @@
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>0.2.22.14</Version>
+    <Version>0.2.23.15</Version>
     <Authors>Rory Clark Manuelle Alesna</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
