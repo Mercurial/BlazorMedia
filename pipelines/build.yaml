@@ -40,12 +40,6 @@ steps:
     Contents: '**.nupkg'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: 'BlazorMedia/'
-    Contents: '**.config.temp'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
