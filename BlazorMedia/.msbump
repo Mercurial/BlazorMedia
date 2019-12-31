@@ -1,0 +1,11 @@
+{
+  "Configurations": {
+    "Debug": {
+      "BumpPatch": true
+    },
+    
+    "Release": {
+        "BumpPatch": true
+    }
+  }
+}
