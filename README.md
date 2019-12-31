@@ -5,6 +5,11 @@ Blazor Library for Interacting with Browser Media Streaming APIs
 
 # How to use
 
+Command Line
+```
+dotnet add package BlazorMedia --version 0.2.7.1
+```
+
 In your Component
 ```C#
 @using BlazorMedia
