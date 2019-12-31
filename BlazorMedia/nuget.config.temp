@@ -7,7 +7,7 @@
     <packageSourceCredentials>
         <github>
             <add key="Username" value="mercurial" />
-            <add key="ClearTextPassword" value="#{PAT}#" />
+            <add key="ClearTextPassword" value="7fec077a7b706d9c3faea07414df83efb399a41c" />
         </github>
     </packageSourceCredentials>
 </configuration>
