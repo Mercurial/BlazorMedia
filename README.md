@@ -1,6 +1,8 @@
 [![Build Status](https://dev.azure.com/rawriclark/BlazorMedia/_apis/build/status/BlazorMedia-CI?branchName=master)](https://dev.azure.com/rawriclark/BlazorMedia/_build/latest?definitionId=1&branchName=master) [![Nuget](https://img.shields.io/nuget/v/BlazorMedia)](https://www.nuget.org/packages/BlazorMedia/)
 
 # BlazorMedia
+Open Source Media Capture API and Components for Blazor
+
 Blazor Library for Interacting with Browser Media Streaming APIs
 
 # How to use
