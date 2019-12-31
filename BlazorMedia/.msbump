@@ -2,7 +2,7 @@
   "Configurations": {
     "Debug": {
         "BumpPatch": true,
-        "ResetRevision": true
+        "BumpRevision": true
     },
     
     "Release": {
