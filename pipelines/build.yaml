@@ -15,3 +15,20 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+
+- script: dotnet pack --configuration $(buildConfiguration)
+  displayName: 'dotnet pack $(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'bin/Release'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+    OverWrite: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'BlazorMedia'
+    publishLocation: 'Container'
