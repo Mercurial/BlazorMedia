@@ -39,13 +39,13 @@ namespace BlazorMedia
         {
             if(firstRender)
             {
-                await InitializeComponent();
+                await InitializeComponentAsync();
             }
 
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected async Task InitializeComponent()
+        protected async Task InitializeComponentAsync()
         {
             await JS.InvokeAsync<dynamic>(
                 "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
@@ -55,7 +55,7 @@ namespace BlazorMedia
         }
 
         [JSInvokable]
-        public async void ReceiveData(int[] data)
+        public async void ReceiveDataAsync(int[] data)
         {
             /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();

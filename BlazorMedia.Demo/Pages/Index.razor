@@ -21,7 +21,7 @@ Welcome to your new app.
     {
         if(firstRender)
         {
-            if(!BlazorMediaAPI.Initialized) await BlazorMediaAPI.InitializeMediaStream(JSRuntime);
+            if(!BlazorMediaAPI.Initialized) await BlazorMediaAPI.InitializeMediaStreamAsync(JSRuntime);
             StateHasChanged();
         }
         await base.OnAfterRenderAsync(firstRender);
