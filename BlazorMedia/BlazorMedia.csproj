@@ -11,16 +11,14 @@
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>0.2.4</Version>
+    <Version>0.2.6</Version>
     <Authors>Rory Clark Manuelle Alesna</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/Mercurial/BlazorMedia</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Mercurial/BlazorMedia</RepositoryUrl>
+    <PackageProjectUrl>https://dev.azure.com/rawriclark/BlazorMedia</PackageProjectUrl>
+    <RepositoryUrl>https://dev.azure.com/rawriclark/_git/BlazorMedia</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>Blazor Library for Interacting with Browser Media Streaming APIs
-
-https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</Description>
+    <Description>Blazor Library for Interacting with Browser Media Streaming APIs https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</Description>
     <Copyright>Copyright (c) 2019 Rory Clark Manuelle Alesna</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
@@ -49,6 +47,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</Description>
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -60,5 +62,4 @@ https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</Description>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm run build" />
   </Target>
-
 </Project>
