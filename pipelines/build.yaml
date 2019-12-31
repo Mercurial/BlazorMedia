@@ -26,9 +26,8 @@ steps:
     version: '13.x'
     checkLatest: true
 
-- task: Npm@1
-  inputs:
-    command: 'install'
+- script: npm install
+  displayName: 'npm install'
 
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
