@@ -16,7 +16,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://dev.azure.com/rawriclark/BlazorMedia</PackageProjectUrl>
-    <RepositoryUrl>https://dev.azure.com/rawriclark/_git/BlazorMedia</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Mercurial/BlazorMedia</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Description>Blazor Library for Interacting with Browser Media Streaming APIs https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</Description>
     <Copyright>Copyright (c) 2019 Rory Clark Manuelle Alesna</Copyright>
