@@ -45,14 +45,20 @@ namespace BlazorMedia {
                 }
             };
 
+            BlazorMediaInterop.UninitializeMediaStream();
+            BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+        }
+
+        static async UninitializeMediaStream()
+        {
             if (BlazorMediaInterop.MediaStream) {
                 let tracks = BlazorMediaInterop.MediaStream.getTracks();
                 let track: MediaStreamTrack | undefined;
                 while (track = tracks.pop()) {
                     BlazorMediaInterop.MediaStream.removeTrack(track);
                 }
+                console.log(BlazorMediaInterop.MediaStream.getTracks());
             }
-            BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
         }
 
         static async InitializeVideoElement(videoElement: BlazorMediaVideoElement, componentRef: any, timeslice: number = 0) {

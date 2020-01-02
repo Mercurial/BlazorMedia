@@ -6,10 +6,7 @@
 
 Welcome to your new app.
 
-@if(BlazorMediaAPI.Initialized)
-{
-    <VideoMedia OnDataReceived="OnDataReceived" Timeslice="100"></VideoMedia>
-}
+<VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -19,11 +16,6 @@ Welcome to your new app.
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
-        {
-            if(!BlazorMediaAPI.Initialized) await BlazorMediaAPI.InitializeMediaStreamAsync(JSRuntime);
-            StateHasChanged();
-        }
         await base.OnAfterRenderAsync(firstRender);
     }
 

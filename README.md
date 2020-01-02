@@ -17,19 +17,9 @@ In your Component
 @using BlazorMedia
 ```
 ```C#
-@if (BlazorMediaAPI.Initialized)
-{
-    <VideoMedia OnDataReceived="@OnDataReceived" />
-}
+<VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
 ```
 **Code Behind**
-
-```C#
-if (!BlazorMediaAPI.Initialized)
-{
-    await BlazorMediaAPI.InitializeMediaStream(JSRuntime, 640, 480, true);
-}
-```
 
 ```C#
 protected void OnDataReceived(byte[] data)

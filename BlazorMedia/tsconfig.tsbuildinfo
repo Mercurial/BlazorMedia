@@ -50,8 +50,8 @@
         "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
       },
       "./wwwroot/BlazorMedia.ts": {
-        "version": "5c250ddbc85ed48fbd56d3ac5e831cda85364df1b7803aa17d593d2efc408632",
-        "signature": "eb3581404ad16fcae29936c5e1dc633c7723c0b5e7b046f1b353865c931dae06"
+        "version": "5edcd993ac47abd6f6a526e01ade9ada24cff55d5dadfd0e0ef211ed288a4abe",
+        "signature": "bf68d6844d572e5a3e77e9858d66049ec8c5290f60035e62c1a9ef5c843dac4e"
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
         "version": "669da4869cd4799acc98aafff61f9f5ae2855207da1e408420729f67cd5a8345",

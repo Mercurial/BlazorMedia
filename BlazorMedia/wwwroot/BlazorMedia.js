@@ -47,7 +47,7 @@ var BlazorMedia;
             if (height === void 0) { height = 480; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
             return __awaiter(this, void 0, void 0, function () {
-                var tracks, track, _a;
+                var _a;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -66,19 +66,29 @@ var BlazorMedia;
                                     },
                                 }
                             };
-                            if (BlazorMediaInterop.MediaStream) {
-                                tracks = BlazorMediaInterop.MediaStream.getTracks();
-                                track = void 0;
-                                while (track = tracks.pop()) {
-                                    BlazorMediaInterop.MediaStream.removeTrack(track);
-                                }
-                            }
+                            BlazorMediaInterop.UninitializeMediaStream();
                             _a = BlazorMediaInterop;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
                         case 1:
                             _a.MediaStream = _b.sent();
                             return [2 /*return*/];
                     }
+                });
+            });
+        };
+        BlazorMediaInterop.UninitializeMediaStream = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var tracks, track;
+                return __generator(this, function (_a) {
+                    if (BlazorMediaInterop.MediaStream) {
+                        tracks = BlazorMediaInterop.MediaStream.getTracks();
+                        track = void 0;
+                        while (track = tracks.pop()) {
+                            BlazorMediaInterop.MediaStream.removeTrack(track);
+                        }
+                        console.log(BlazorMediaInterop.MediaStream.getTracks());
+                    }
+                    return [2 /*return*/];
                 });
             });
         };

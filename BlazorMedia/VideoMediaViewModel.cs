@@ -12,8 +12,6 @@ namespace BlazorMedia
     {
         [Inject]
         IJSRuntime JS { get; set; }
-
-        bool IsInitialized { get; set; }
         protected ElementReference VideoElementRef { get; set; }
         [Parameter]
         public EventCallback<byte[]> OnDataReceived { get; set; }
@@ -27,7 +25,7 @@ namespace BlazorMedia
             }
             set
             {
-                if(_timeslice != value)
+                if (_timeslice != value)
                 {
                     _timeslice = value;
                     JS.InvokeAsync<dynamic>("BlazorMedia.BlazorMediaInterop.SetVideoRecorderTimeslice", VideoElementRef, value);
@@ -35,9 +33,20 @@ namespace BlazorMedia
             }
         }
 
+        [Parameter]
+        public int Width { get; set; } = 640;
+
+        [Parameter]
+        public int Height { get; set; } = 480;
+
+        [Parameter]
+        public bool RecordAudio { get; set; } = false;
+
+        protected bool IsInitialized { get; set; } = false;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(firstRender)
+            if (firstRender)
             {
                 await InitializeComponentAsync();
             }
@@ -47,6 +56,12 @@ namespace BlazorMedia
 
         protected async Task InitializeComponentAsync()
         {
+            if (!IsInitialized)
+            {
+                await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio);
+                IsInitialized = true;
+            }
+
             await JS.InvokeAsync<dynamic>(
                 "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
                 VideoElementRef,
@@ -67,11 +82,18 @@ namespace BlazorMedia
         {
             try
             {
-                await JS.InvokeAsync<dynamic>(
-                    "BlazorMedia.BlazorMediaInterop.DisposeVideoElement",
-                    VideoElementRef);
+                if (IsInitialized)
+                {
+                    await JS.InvokeAsync<dynamic>(
+                        "BlazorMedia.BlazorMediaInterop.DisposeVideoElement",
+                        VideoElementRef);
+
+                    await BlazorMediaAPI.UnInitializeMediaStreamAsync(JS);
+                    
+                    IsInitialized = false;
+                }
             }
-            catch 
+            catch
             {
                 // Page has been reloaded, API is not available
             }
