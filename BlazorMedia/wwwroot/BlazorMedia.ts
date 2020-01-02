@@ -66,7 +66,7 @@ namespace BlazorMedia {
             videoElement.mediaRecorder.ondataavailable = async (e) => {
                 let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
                 let buffer = Array.from(uintArr);
-                componentRef.invokeMethodAsync("ReceiveData", buffer);
+                await componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
             };
             videoElement.mediaRecorder.start(timeslice);
         }

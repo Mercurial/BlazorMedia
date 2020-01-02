@@ -103,7 +103,9 @@ var BlazorMedia;
                                 case 1:
                                     uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
                                     buffer = Array.from(uintArr);
-                                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                                    return [4 /*yield*/, componentRef.invokeMethodAsync("ReceiveDataAsync", buffer)];
+                                case 2:
+                                    _b.sent();
                                     return [2 /*return*/];
                             }
                         });
