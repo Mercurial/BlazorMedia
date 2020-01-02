@@ -57,7 +57,6 @@ namespace BlazorMedia {
                 while (track = tracks.pop()) {
                     BlazorMediaInterop.MediaStream.removeTrack(track);
                 }
-                console.log(BlazorMediaInterop.MediaStream.getTracks());
             }
         }
 
