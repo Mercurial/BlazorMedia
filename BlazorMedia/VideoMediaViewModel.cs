@@ -70,12 +70,12 @@ namespace BlazorMedia
         }
 
         [JSInvokable]
-        public async void ReceiveDataAsync(int[] data)
+        public void ReceiveDataAsync(int[] data)
         {
             /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
             if (OnDataReceived.HasDelegate)
-                await OnDataReceived.InvokeAsync(buffer);
+                OnDataReceived.InvokeAsync(buffer);
         }
 
         public async void Dispose()

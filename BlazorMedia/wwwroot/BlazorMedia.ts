@@ -49,8 +49,7 @@ namespace BlazorMedia {
             BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
         }
 
-        static async UninitializeMediaStream()
-        {
+        static async UninitializeMediaStream() {
             if (BlazorMediaInterop.MediaStream) {
                 let tracks = BlazorMediaInterop.MediaStream.getTracks();
                 let track: MediaStreamTrack | undefined;
@@ -71,14 +70,13 @@ namespace BlazorMedia {
             videoElement.mediaRecorder.ondataavailable = async (e) => {
                 let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
                 let buffer = Array.from(uintArr);
-                await componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
+                componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
             };
             videoElement.mediaRecorder.start(timeslice);
         }
 
         static async DisposeVideoElement(videoElement: BlazorMediaVideoElement) {
-            if(videoElement && videoElement.mediaRecorder)
-            {
+            if (videoElement && videoElement.mediaRecorder) {
                 videoElement.mediaRecorder.stop();
             }
         }

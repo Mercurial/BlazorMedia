@@ -6,9 +6,13 @@
 
 Welcome to your new app.
 
-<VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
-
+@if(IsRecording)
+{
+    <VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
+}
+<button @onclick="@(()=>{ IsRecording = !IsRecording; })">Toggle Recording</button>
 @code {
+    protected bool IsRecording = false;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

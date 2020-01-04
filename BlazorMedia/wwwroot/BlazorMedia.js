@@ -86,7 +86,6 @@ var BlazorMedia;
                         while (track = tracks.pop()) {
                             BlazorMediaInterop.MediaStream.removeTrack(track);
                         }
-                        console.log(BlazorMediaInterop.MediaStream.getTracks());
                     }
                     return [2 /*return*/];
                 });
@@ -113,9 +112,7 @@ var BlazorMedia;
                                 case 1:
                                     uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
                                     buffer = Array.from(uintArr);
-                                    return [4 /*yield*/, componentRef.invokeMethodAsync("ReceiveDataAsync", buffer)];
-                                case 2:
-                                    _b.sent();
+                                    componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
                                     return [2 /*return*/];
                             }
                         });
