@@ -5,6 +5,8 @@ Open Source Media Capture API and Components for Blazor
 
 A Blazor Library for Interacting with [Browser Media Streaming APIs](https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API)
 
+This Library allows you to record your browsers Camera / Screen Sharing Data and save it to a file or live stream it to a remote server.
+
 # How to use
 
 Command Line
