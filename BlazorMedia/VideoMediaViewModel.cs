@@ -42,6 +42,12 @@ namespace BlazorMedia
         [Parameter]
         public bool RecordAudio { get; set; } = false;
 
+        [Parameter]
+        public string Id { get; set; } = string.Empty;
+
+        [Parameter]
+        public string Class { get; set; } = string.Empty;
+
         protected bool IsInitialized { get; set; } = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -89,7 +95,7 @@ namespace BlazorMedia
                         VideoElementRef);
 
                     await BlazorMediaAPI.UnInitializeMediaStreamAsync(JS);
-                    
+
                     IsInitialized = false;
                 }
             }
