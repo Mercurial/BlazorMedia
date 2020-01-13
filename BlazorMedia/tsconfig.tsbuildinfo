@@ -49,8 +49,8 @@
         "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
         "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
       },
-      "./wwwroot/BlazorMedia.ts": {
-        "version": "c6b1ec7de36bdf20d6e73ce73b75acd6420e61dd973516a4083acc582defb322",
+      "./wwwroot/blazormedia.ts": {
+        "version": "751555b6ff56500e42b596add7d06c0dfb2bf92851c61241fd93b95acc4aaa0f",
         "signature": "bf68d6844d572e5a3e77e9858d66049ec8c5290f60035e62c1a9ef5c843dac4e"
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
@@ -87,7 +87,7 @@
       "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
       "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
       "./node_modules/@types/dom-mediacapture-record/index.d.ts",
-      "./wwwroot/BlazorMedia.ts"
+      "./wwwroot/blazormedia.ts"
     ]
   },
   "version": "3.7.4"

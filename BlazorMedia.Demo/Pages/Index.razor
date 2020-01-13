@@ -8,11 +8,11 @@ Welcome to your new app.
 
 @if(IsRecording)
 {
-    <VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
+    <VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="1024" Height="768" RecordAudio="true"></VideoMedia>
 }
 else
 {
-    <VideoMedia Timeslice="100" Width="640" Height="480" RecordAudio="true"></VideoMedia>
+    <VideoMedia Timeslice="100" Width="1024" Height="768" RecordAudio="true"></VideoMedia>
 }
 <button @onclick="@(()=>{ IsRecording = !IsRecording; })">Toggle Recording</button>
 @code {

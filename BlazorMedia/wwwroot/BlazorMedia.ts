@@ -13,14 +13,10 @@ namespace BlazorMedia {
             audio: true,
             video: {
                 width: {
-                    min: 640,
-                    ideal: 640,
-                    max: 640
+                    ideal: 640
                 },
                 height: {
-                    min: 480,
-                    ideal: 480,
-                    max: 480
+                    ideal: 480
                 },
             }
         }
@@ -33,14 +29,10 @@ namespace BlazorMedia {
                 audio: canCaptureAudio,
                 video: {
                     width: {
-                        min: width,
-                        ideal: width,
-                        max: width
+                        ideal: width
                     },
                     height: {
-                        min: height,
-                        ideal: height,
-                        max: height
+                        ideal: height
                     },
                 }
             };
