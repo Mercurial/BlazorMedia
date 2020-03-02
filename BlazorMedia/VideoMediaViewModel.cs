@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-
 namespace BlazorMedia
 {
     public class VideoMediaViewModel : ComponentBase, IDisposable
@@ -43,6 +40,12 @@ namespace BlazorMedia
         public bool RecordAudio { get; set; } = false;
 
         [Parameter]
+        public string CameraDeviceId { get; set; } = string.Empty;
+
+        [Parameter]
+        public string MicrophoneDeviceId { get; set; } = string.Empty;
+
+        [Parameter]
         public string Id { get; set; } = string.Empty;
 
         [Parameter]
@@ -64,7 +67,7 @@ namespace BlazorMedia
         {
             if (!IsInitialized)
             {
-                await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio);
+                await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId);
                 IsInitialized = true;
             }
 
@@ -104,5 +107,6 @@ namespace BlazorMedia
                 // Page has been reloaded, API is not available
             }
         }
+
     }
 }
