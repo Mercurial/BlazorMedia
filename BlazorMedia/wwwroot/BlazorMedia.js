@@ -42,17 +42,21 @@ var BlazorMedia;
     var BlazorMediaInterop = /** @class */ (function () {
         function BlazorMediaInterop() {
         }
-        BlazorMediaInterop.InitializeMediaStream = function (width, height, canCaptureAudio) {
+        BlazorMediaInterop.InitializeMediaStream = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId) {
             if (width === void 0) { width = 640; }
             if (height === void 0) { height = 480; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
+            if (cameraDeviceId === void 0) { cameraDeviceId = ""; }
+            if (microphoneDeviceId === void 0) { microphoneDeviceId = ""; }
             return __awaiter(this, void 0, void 0, function () {
                 var _a;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
                             BlazorMediaInterop.constraints = {
-                                audio: canCaptureAudio,
+                                audio: {
+                                    deviceId: microphoneDeviceId,
+                                },
                                 video: {
                                     width: {
                                         ideal: width
@@ -60,8 +64,13 @@ var BlazorMedia;
                                     height: {
                                         ideal: height
                                     },
+                                    deviceId: cameraDeviceId,
                                 }
                             };
+                            if (canCaptureAudio == false) {
+                                BlazorMediaInterop.constraints.audio = false;
+                                console.log("was here");
+                            }
                             BlazorMediaInterop.UninitializeMediaStream();
                             _a = BlazorMediaInterop;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
@@ -80,6 +89,7 @@ var BlazorMedia;
                         tracks = BlazorMediaInterop.MediaStream.getTracks();
                         track = void 0;
                         while (track = tracks.pop()) {
+                            track.stop();
                             BlazorMediaInterop.MediaStream.removeTrack(track);
                         }
                     }
@@ -95,7 +105,6 @@ var BlazorMedia;
                     if (!BlazorMediaInterop.MediaStream)
                         throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
                     videoElement.srcObject = BlazorMediaInterop.MediaStream;
-                    videoElement.muted = true;
                     videoElement.volume = 0;
                     videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
                     videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
@@ -142,7 +151,9 @@ var BlazorMedia;
         };
         /// Defaults
         BlazorMediaInterop.constraints = {
-            audio: true,
+            audio: {
+                deviceId: ""
+            },
             video: {
                 width: {
                     ideal: 640
@@ -150,7 +161,8 @@ var BlazorMedia;
                 height: {
                     ideal: 480
                 },
-            }
+                deviceId: ""
+            },
         };
         return BlazorMediaInterop;
     }());
