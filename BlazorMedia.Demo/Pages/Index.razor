@@ -4,17 +4,13 @@
 
 @inherits IndexViewModel
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
 @if(IsRecording)
 {
-    <VideoMedia OnDataReceived="OnDataReceived" OnError="OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
+    <VideoMedia OnDataReceived="@OnDataReceived" OnError="@OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
 }
 else
 {
-    <VideoMedia OnError="OnError"  Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
+    <VideoMedia OnError="@OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
 }
 
 <button @onclick="@(()=>{ OnToggleRecordingPressed(); })">Toggle Recording</button>
@@ -25,7 +21,7 @@ else
         <select id="cameras" value="@SelectedCamera" @onchange="@((e)=>{ OnCameraSelected(e); })">
             @foreach(MediaDeviceInfo mdi in Cameras)
             {
-                <option value="@mdi.deviceId" >@mdi.label</option>
+                <option value="@mdi.DeviceId" >@mdi.Label</option>
             }
         </select>
         <p>Selected Camera:@(SelectedCamera)</p>
@@ -37,7 +33,7 @@ else
         <select id="microphones" value="@SelectedMicrophone" @onchange="@((e)=>{ OnMicrophoneSelected(e); })">
             @foreach(MediaDeviceInfo mdi in Microphones)
             {
-                <option value="@mdi.deviceId">@mdi.label</option>
+                <option value="@mdi.DeviceId">@mdi.Label</option>
             }
         </select>
         <p>Selected Microphone:@(SelectedMicrophone)</p>

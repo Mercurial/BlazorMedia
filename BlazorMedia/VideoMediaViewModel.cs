@@ -16,7 +16,7 @@ namespace BlazorMedia
         public EventCallback<byte[]> OnDataReceived { get; set; }
 
         [Parameter]
-        public EventCallback<BMError> OnError { get; set; }
+        public EventCallback<MediaError> OnError { get; set; }
 
         private int _timeslice = 0;
         [Parameter]
@@ -69,32 +69,15 @@ namespace BlazorMedia
             await base.OnAfterRenderAsync(firstRender);
         }
 
+        protected BlazorMediaAPI BlazorMediaAPI { get; set; }
+
         public async Task InitializeComponentAsync()
         {
-            try
+            if (!IsInitialized)
             {
-                if (!IsInitialized)
-                {
-                    await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId);
-                    IsInitialized = true;
-                }
-
-                await JS.InvokeAsync<dynamic>(
-                    "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
-                    VideoElementRef,
-                    DotNetObjectReference.Create(this),
-                    Timeslice);
-            }
-            catch(JSException exception)
-            {
-                var bmError = new BMError()
-                {
-                    Type = BMErrorType.Initialization,
-                    Message = "Unable to initialize video stream. Please check Media Device Permissions."
-                };
-
-                if (OnError.HasDelegate)
-                    await OnError.InvokeAsync(bmError);
+                BlazorMediaAPI = new BlazorMediaAPI(JS);
+                await BlazorMediaAPI.InitializeMediaStreamAsync(Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, DotNetObjectReference.Create(this));
+                IsInitialized = true;
             }
         }
 
@@ -108,39 +91,21 @@ namespace BlazorMedia
         }
 
         [JSInvokable]
-        public void MediaError(BMError bmError)
+        public void ReceiveError(MediaError mediaError)
         {
             if (OnError.HasDelegate)
-                OnError.InvokeAsync(bmError);
-            
+                OnError.InvokeAsync(mediaError);
+
         }
 
         public async void Dispose()
         {
-            try
+            if (IsInitialized)
             {
-                if (IsInitialized)
-                {
-                    await JS.InvokeAsync<dynamic>(
-                        "BlazorMedia.BlazorMediaInterop.DisposeVideoElement",
-                        VideoElementRef);
-
-                    await BlazorMediaAPI.UnInitializeMediaStreamAsync(JS);
-
-                    IsInitialized = false;
-                }
+                await BlazorMediaAPI.UnInitializeMediaStreamAsync(VideoElementRef);
+                IsInitialized = false;
             }
-            catch
-            {
-                // Page has been reloaded, API is not available
-                var bmError = new BMError()
-                {
-                    Type = BMErrorType.Recorder,
-                    Message = "Error occured while stopping media stream."
-                };
-                if (OnError.HasDelegate)
-                    OnError.InvokeAsync(bmError);
-            }
+
         }
 
     }
