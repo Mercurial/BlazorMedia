@@ -83,7 +83,7 @@ var BlazorMedia;
                             return [3 /*break*/, 4];
                         case 3:
                             exception_1 = _b.sent();
-                            mediaError = { Type: 1, Message: exception_1.message };
+                            mediaError = { Type: 0, Message: exception_1.message };
                             componentRef.invokeMethodAsync("ReceiveError", mediaError);
                             throw exception_1;
                         case 4:
