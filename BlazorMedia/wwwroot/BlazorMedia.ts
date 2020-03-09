@@ -4,7 +4,6 @@
 interface BlazorMediaVideoElement extends HTMLVideoElement {
     mediaRecorder: MediaRecorder;
 }
-
 namespace BlazorMedia {
     export class BlazorMediaInterop {
 
@@ -44,21 +43,45 @@ namespace BlazorMedia {
                 }
             };
 
-            if(canCaptureAudio == false) {
+            if (canCaptureAudio == false) {
                 BlazorMediaInterop.constraints.audio = false as any;
             }
             BlazorMediaInterop.UninitializeMediaStream();
-            BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+
+            try {
+                BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+            }
+            catch (exception) {
+                throw exception;
+            }
         }
 
         static async UninitializeMediaStream() {
-            if (BlazorMediaInterop.MediaStream) {
-                let tracks = BlazorMediaInterop.MediaStream.getTracks();
-                let track: MediaStreamTrack | undefined;
-                while (track = tracks.pop()) {
-                    track.stop();
-                    BlazorMediaInterop.MediaStream.removeTrack(track);
+            try {
+                if (BlazorMediaInterop.MediaStream) {
+                    let tracks = BlazorMediaInterop.MediaStream.getTracks();
+                    let track: MediaStreamTrack | undefined;
+                    while (track = tracks.pop()) {
+                        track.stop();
+                        BlazorMediaInterop.MediaStream.removeTrack(track);
+                    }
                 }
+            } catch (exception) {
+                throw exception;
+            }
+        }
+
+        static async OnDeviceChange(currentMediaDevices: any[], componentRef: any) {
+            navigator.mediaDevices.ondevicechange = async (e) => {
+                var newDevices = await navigator.mediaDevices.enumerateDevices();
+                var oldDevicesLabel = currentMediaDevices.map(devices => devices.label);
+                var newDevicesLabel = newDevices.map(devices => devices.label);
+
+                var removedDevices = currentMediaDevices.filter(device => newDevicesLabel.indexOf(device.label) == -1);
+                var addedDevices = newDevices.filter(device => oldDevicesLabel.indexOf(device.label) == -1);
+
+                componentRef.invokeMethodAsync("OnDeviceChange", newDevices, removedDevices, addedDevices);
+                currentMediaDevices = newDevices;
             }
         }
 
@@ -70,16 +93,31 @@ namespace BlazorMedia {
             videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
 
             videoElement.mediaRecorder.ondataavailable = async (e) => {
-                let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
-                let buffer = Array.from(uintArr);
-                componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
+                try {
+                    let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
+                    let buffer = Array.from(uintArr);
+                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                } catch (exception) {
+                    var bmError = { Type: 2, Message: "Media Recorder error, unable to continue media stream." }
+                    componentRef.invokeMethodAsync("MediaError", bmError);
+                }
             };
+
+            videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
+                var bmError = { Type: 2, Message: "Media Recorder error, unable to continue media stream." }
+                componentRef.invokeMethodAsync("MediaError", bmError);
+            };
+
             videoElement.mediaRecorder.start(timeslice);
         }
 
         static async DisposeVideoElement(videoElement: BlazorMediaVideoElement) {
-            if (videoElement && videoElement.mediaRecorder) {
-                videoElement.mediaRecorder.stop();
+            try {
+                if (videoElement && videoElement.mediaRecorder) {
+                    videoElement.mediaRecorder.stop();
+                }
+            } catch (exception) {
+                throw exception;
             }
         }
 

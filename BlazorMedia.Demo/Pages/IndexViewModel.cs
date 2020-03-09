@@ -38,10 +38,15 @@ namespace BlazorMedia.Demo
             Console.WriteLine(data.Length);
         }
 
+        protected void OnError(BMError data)
+        {
+            Console.WriteLine(data);
+        }
+
         protected async Task FetchDeviceListAsync()
         {
             var Devices = await BlazorMediaAPI.EnumerateMediaDevices(JSRuntime);
-
+            BlazorMediaAPI.OnDeviceChange(JSRuntime, DotNetObjectReference.Create(this));
             foreach (MediaDeviceInfo mdi in Devices)
             {
                 if (mdi.kind == "audioinput")
@@ -54,11 +59,11 @@ namespace BlazorMedia.Demo
                 }
             }
 
-            if(Microphones.Count > 0)
+            if (Microphones.Count > 0)
             {
                 SelectedMicrophone = Microphones[0].deviceId;
             }
-            if(Cameras.Count > 0)
+            if (Cameras.Count > 0)
             {
                 SelectedCamera = Cameras[0].deviceId;
             }
@@ -79,7 +84,28 @@ namespace BlazorMedia.Demo
             IsRecording = !IsRecording;
         }
 
+        [JSInvokable]
+        public void OnDeviceChange(List<MediaDeviceInfo> devices, List<MediaDeviceInfo> removedDevices, List<MediaDeviceInfo> addedDevices)
+        {
+            Console.WriteLine("Total :" + devices.Count);
+            foreach (var device in devices)
+            {
+                Console.WriteLine(device.label);
+            }
+
+            Console.WriteLine("Total removedDevices:" + removedDevices.Count);
+            foreach (var device in removedDevices)
+            {
+                Console.WriteLine(device.label);
+            }
+
+            Console.WriteLine("Total AddedDevices:" + addedDevices.Count);
+            foreach (var device in addedDevices)
+            {
+                Console.WriteLine(device.label);
+            }
+        }
+
     }
- 
+
 }
- 

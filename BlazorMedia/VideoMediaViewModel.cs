@@ -3,6 +3,8 @@ using Microsoft.JSInterop;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using BlazorMedia.Model;
+
 namespace BlazorMedia
 {
     public class VideoMediaViewModel : ComponentBase, IDisposable
@@ -12,6 +14,10 @@ namespace BlazorMedia
         protected ElementReference VideoElementRef { get; set; }
         [Parameter]
         public EventCallback<byte[]> OnDataReceived { get; set; }
+
+        [Parameter]
+        public EventCallback<BMError> OnError { get; set; }
+
         private int _timeslice = 0;
         [Parameter]
         public int Timeslice
@@ -63,28 +69,50 @@ namespace BlazorMedia
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected async Task InitializeComponentAsync()
+        public async Task InitializeComponentAsync()
         {
-            if (!IsInitialized)
+            try
             {
-                await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId);
-                IsInitialized = true;
-            }
+                if (!IsInitialized)
+                {
+                    await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId);
+                    IsInitialized = true;
+                }
 
-            await JS.InvokeAsync<dynamic>(
-                "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
-                VideoElementRef,
-                DotNetObjectReference.Create(this),
-                Timeslice);
+                await JS.InvokeAsync<dynamic>(
+                    "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
+                    VideoElementRef,
+                    DotNetObjectReference.Create(this),
+                    Timeslice);
+            }
+            catch(JSException exception)
+            {
+                var bmError = new BMError()
+                {
+                    Type = BMErrorType.Initialization,
+                    Message = "Unable to initialize video stream. Please check Media Device Permissions."
+                };
+
+                if (OnError.HasDelegate)
+                    await OnError.InvokeAsync(bmError);
+            }
         }
 
         [JSInvokable]
-        public void ReceiveDataAsync(int[] data)
+        public void ReceiveData(int[] data)
         {
             /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
             if (OnDataReceived.HasDelegate)
                 OnDataReceived.InvokeAsync(buffer);
+        }
+
+        [JSInvokable]
+        public void MediaError(BMError bmError)
+        {
+            if (OnError.HasDelegate)
+                OnError.InvokeAsync(bmError);
+            
         }
 
         public async void Dispose()
@@ -105,6 +133,13 @@ namespace BlazorMedia
             catch
             {
                 // Page has been reloaded, API is not available
+                var bmError = new BMError()
+                {
+                    Type = BMErrorType.Recorder,
+                    Message = "Error occured while stopping media stream."
+                };
+                if (OnError.HasDelegate)
+                    OnError.InvokeAsync(bmError);
             }
         }
 

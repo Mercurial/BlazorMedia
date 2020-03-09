@@ -10,11 +10,11 @@ Welcome to your new app.
 
 @if(IsRecording)
 {
-    <VideoMedia OnDataReceived="OnDataReceived" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
+    <VideoMedia OnDataReceived="OnDataReceived" OnError="OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
 }
 else
 {
-    <VideoMedia Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
+    <VideoMedia OnError="OnError"  Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
 }
 
 <button @onclick="@(()=>{ OnToggleRecordingPressed(); })">Toggle Recording</button>

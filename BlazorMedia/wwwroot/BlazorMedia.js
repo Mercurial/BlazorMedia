@@ -49,7 +49,7 @@ var BlazorMedia;
             if (cameraDeviceId === void 0) { cameraDeviceId = ""; }
             if (microphoneDeviceId === void 0) { microphoneDeviceId = ""; }
             return __awaiter(this, void 0, void 0, function () {
-                var _a;
+                var _a, exception_1;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -69,14 +69,20 @@ var BlazorMedia;
                             };
                             if (canCaptureAudio == false) {
                                 BlazorMediaInterop.constraints.audio = false;
-                                console.log("was here");
                             }
                             BlazorMediaInterop.UninitializeMediaStream();
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 3, , 4]);
                             _a = BlazorMediaInterop;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
-                        case 1:
+                        case 2:
                             _a.MediaStream = _b.sent();
-                            return [2 /*return*/];
+                            return [3 /*break*/, 4];
+                        case 3:
+                            exception_1 = _b.sent();
+                            throw exception_1;
+                        case 4: return [2 /*return*/];
                     }
                 });
             });
@@ -85,14 +91,44 @@ var BlazorMedia;
             return __awaiter(this, void 0, void 0, function () {
                 var tracks, track;
                 return __generator(this, function (_a) {
-                    if (BlazorMediaInterop.MediaStream) {
-                        tracks = BlazorMediaInterop.MediaStream.getTracks();
-                        track = void 0;
-                        while (track = tracks.pop()) {
-                            track.stop();
-                            BlazorMediaInterop.MediaStream.removeTrack(track);
+                    try {
+                        if (BlazorMediaInterop.MediaStream) {
+                            tracks = BlazorMediaInterop.MediaStream.getTracks();
+                            track = void 0;
+                            while (track = tracks.pop()) {
+                                track.stop();
+                                BlazorMediaInterop.MediaStream.removeTrack(track);
+                            }
                         }
                     }
+                    catch (exception) {
+                        throw exception;
+                    }
+                    return [2 /*return*/];
+                });
+            });
+        };
+        BlazorMediaInterop.OnDeviceChange = function (currentMediaDevices, componentRef) {
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    navigator.mediaDevices.ondevicechange = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                        var newDevices, oldDevicesLabel, newDevicesLabel, removedDevices, addedDevices;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                                case 1:
+                                    newDevices = _a.sent();
+                                    oldDevicesLabel = currentMediaDevices.map(function (devices) { return devices.label; });
+                                    newDevicesLabel = newDevices.map(function (devices) { return devices.label; });
+                                    removedDevices = currentMediaDevices.filter(function (device) { return newDevicesLabel.indexOf(device.label) == -1; });
+                                    addedDevices = newDevices.filter(function (device) { return oldDevicesLabel.indexOf(device.label) == -1; });
+                                    componentRef.invokeMethodAsync("OnDeviceChange", newDevices, removedDevices, addedDevices);
+                                    currentMediaDevices = newDevices;
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); };
                     return [2 /*return*/];
                 });
             });
@@ -108,18 +144,33 @@ var BlazorMedia;
                     videoElement.volume = 0;
                     videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
                     videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var uintArr, _a, buffer;
+                        var uintArr, _a, buffer, exception_2, bmError;
                         return __generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0:
+                                    _b.trys.push([0, 2, , 3]);
                                     _a = Uint8Array.bind;
                                     return [4 /*yield*/, new Response(e.data).arrayBuffer()];
                                 case 1:
                                     uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
                                     buffer = Array.from(uintArr);
-                                    componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
-                                    return [2 /*return*/];
+                                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                                    return [3 /*break*/, 3];
+                                case 2:
+                                    exception_2 = _b.sent();
+                                    bmError = { Type: 2, Message: "Media Recorder error, unable to continue media stream." };
+                                    componentRef.invokeMethodAsync("MediaError", bmError);
+                                    return [3 /*break*/, 3];
+                                case 3: return [2 /*return*/];
                             }
+                        });
+                    }); };
+                    videoElement.mediaRecorder.onerror = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                        var bmError;
+                        return __generator(this, function (_a) {
+                            bmError = { Type: 2, Message: "Media Recorder error, unable to continue media stream." };
+                            componentRef.invokeMethodAsync("MediaError", bmError);
+                            return [2 /*return*/];
                         });
                     }); };
                     videoElement.mediaRecorder.start(timeslice);
@@ -130,8 +181,13 @@ var BlazorMedia;
         BlazorMediaInterop.DisposeVideoElement = function (videoElement) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    if (videoElement && videoElement.mediaRecorder) {
-                        videoElement.mediaRecorder.stop();
+                    try {
+                        if (videoElement && videoElement.mediaRecorder) {
+                            videoElement.mediaRecorder.stop();
+                        }
+                    }
+                    catch (exception) {
+                        throw exception;
                     }
                     return [2 /*return*/];
                 });
