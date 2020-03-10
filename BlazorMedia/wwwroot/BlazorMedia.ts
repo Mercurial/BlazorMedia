@@ -26,7 +26,7 @@ namespace BlazorMedia {
         }
 
 
-        static async InitializeMediaStream(width: number = 640, height: number = 480, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
+        static async Initialize(width: number = 640, height: number = 480, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
 
             BlazorMediaInterop.constraints = {
                 audio: {
@@ -47,7 +47,7 @@ namespace BlazorMedia {
                 BlazorMediaInterop.constraints.audio = false as any;
             }
 
-            BlazorMediaInterop.UninitializeMediaStream(videoElement);
+            BlazorMediaInterop.Uninitialize(videoElement);
 
             try {
                 videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
@@ -74,7 +74,7 @@ namespace BlazorMedia {
             }
         }
 
-        static async UninitializeMediaStream(videoElement: BlazorMediaVideoElement) {
+        static async Uninitialize(videoElement: BlazorMediaVideoElement) {
             if (videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();

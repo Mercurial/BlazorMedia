@@ -28,7 +28,7 @@ namespace BlazorMedia.Demo
             if (firstRender)
             {
                 await FetchDeviceListAsync();
-                BlazorMediaAPI.DeviceChanged += BlazorMedia_DeviceChanged;
+                BlazorMediaAPI.OnDeviceChanged += BlazorMedia_DeviceChanged;
             }
             await base.OnAfterRenderAsync(firstRender);
             await InvokeAsync(StateHasChanged);

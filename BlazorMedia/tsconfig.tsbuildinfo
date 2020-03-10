@@ -50,8 +50,8 @@
         "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
       },
       "./wwwroot/blazormedia.ts": {
-        "version": "5787e03c6f68015fea9f83feda80ccbd2f8c78c3070be9addeb39c7645c7bf64",
-        "signature": "62e93aadb64fedff50ad8b7a0763b86271adb753a3d6af6253df78828bbce5b5"
+        "version": "f6a0bd80e437a0bb7fd1199fc180e652baa239ab14387a317fa1d929029a8e86",
+        "signature": "a8dc3e59ace9497adc188194cff26f6af6fe8559aa681e5e5afa7bc1371bdf73"
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
         "version": "669da4869cd4799acc98aafff61f9f5ae2855207da1e408420729f67cd5a8345",
@@ -74,6 +74,8 @@
     "referencedMap": {},
     "exportedModulesMap": {},
     "semanticDiagnosticsPerFile": [
+      "./wwwroot/blazormedia.ts",
+      "./node_modules/@types/dom-mediacapture-record/index.d.ts",
       "./node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/typescript/lib/lib.es2015.d.ts",
       "./node_modules/typescript/lib/lib.dom.d.ts",
@@ -85,9 +87,7 @@
       "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
       "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
       "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
-      "./node_modules/@types/dom-mediacapture-record/index.d.ts",
-      "./wwwroot/blazormedia.ts"
+      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts"
     ]
   },
   "version": "3.7.4"

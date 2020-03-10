@@ -11,7 +11,9 @@ namespace BlazorMedia
     {
         [Inject]
         IJSRuntime JS { get; set; }
+
         protected ElementReference VideoElementRef { get; set; }
+
         [Parameter]
         public EventCallback<byte[]> OnDataReceived { get; set; }
 
@@ -19,6 +21,7 @@ namespace BlazorMedia
         public EventCallback<MediaError> OnError { get; set; }
 
         private int _timeslice = 0;
+
         [Parameter]
         public int Timeslice
         {
@@ -76,7 +79,7 @@ namespace BlazorMedia
             if (!IsInitialized)
             {
                 BlazorMediaAPI = new BlazorMediaAPI(JS);
-                await BlazorMediaAPI.InitializeMediaStreamAsync(Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, DotNetObjectReference.Create(this));
+                await BlazorMediaAPI.Initialize(Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, DotNetObjectReference.Create(this));
                 IsInitialized = true;
             }
         }
@@ -95,18 +98,15 @@ namespace BlazorMedia
         {
             if (OnError.HasDelegate)
                 OnError.InvokeAsync(mediaError);
-
         }
 
         public async void Dispose()
         {
             if (IsInitialized)
             {
-                await BlazorMediaAPI.UnInitializeMediaStreamAsync(VideoElementRef);
+                await BlazorMediaAPI.UnInitialize(VideoElementRef);
                 IsInitialized = false;
             }
-
         }
-
     }
 }

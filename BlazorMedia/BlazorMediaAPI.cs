@@ -18,14 +18,14 @@ namespace BlazorMedia
 
         }
 
-        public async Task InitializeMediaStreamAsync(int width = 640, int height = 480, bool canCaptureAudio = true, string cameraDeviceId = "", string microphoneDeviceId = "", int timeSlice = 100, object videoElementRef = null, object componentRef = null)
+        public async Task Initialize(int width = 640, int height = 480, bool canCaptureAudio = true, string cameraDeviceId = "", string microphoneDeviceId = "", int timeSlice = 100, object videoElementRef = null, object componentRef = null)
         {
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.InitializeMediaStream", width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Initialize", width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
         }
 
-        public async Task UnInitializeMediaStreamAsync(ElementReference videoElementRef)
+        public async Task UnInitialize(ElementReference videoElementRef)
         {
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.UninitializeMediaStream", videoElementRef);
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Uninitialize", videoElementRef);
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DisposeVideoElement", videoElementRef);
         }
 
@@ -36,14 +36,14 @@ namespace BlazorMedia
             return CurrentMediaDevices;
         }
 
-        public event EventHandler<DeviceChangeEventArgs> DeviceChanged;
+        public event EventHandler<DeviceChangeEventArgs> OnDeviceChanged;
 
         [JSInvokable]
         public void OnDeviceChange(List<MediaDeviceInfo> newDevices)
         {
             var removedDevices = CurrentMediaDevices.Where(cmd => !newDevices.Any(nd => cmd.Label == nd.Label)).ToList();
             var addedDevices = newDevices.Where(nd => !CurrentMediaDevices.Any(cmd => cmd.Label == nd.Label)).ToList();
-            DeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
+            OnDeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
             {
                 Devices = newDevices,
                 RemovedDevices = removedDevices,

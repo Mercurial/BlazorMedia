@@ -42,7 +42,7 @@ var BlazorMedia;
     var BlazorMediaInterop = /** @class */ (function () {
         function BlazorMediaInterop() {
         }
-        BlazorMediaInterop.InitializeMediaStream = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeslice, videoElement, componentRef) {
+        BlazorMediaInterop.Initialize = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeslice, videoElement, componentRef) {
             if (width === void 0) { width = 640; }
             if (height === void 0) { height = 480; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
@@ -72,7 +72,7 @@ var BlazorMedia;
                             if (canCaptureAudio == false) {
                                 BlazorMediaInterop.constraints.audio = false;
                             }
-                            BlazorMediaInterop.UninitializeMediaStream(videoElement);
+                            BlazorMediaInterop.Uninitialize(videoElement);
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 3, , 4]);
@@ -118,7 +118,7 @@ var BlazorMedia;
                 });
             });
         };
-        BlazorMediaInterop.UninitializeMediaStream = function (videoElement) {
+        BlazorMediaInterop.Uninitialize = function (videoElement) {
             return __awaiter(this, void 0, void 0, function () {
                 var stream, tracks, track;
                 return __generator(this, function (_a) {
