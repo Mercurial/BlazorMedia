@@ -80,13 +80,6 @@ var BlazorMedia;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
                         case 2:
                             _a.mediaStream = _b.sent();
-                            return [3 /*break*/, 4];
-                        case 3:
-                            exception_1 = _b.sent();
-                            mediaError = { Type: 0, Message: exception_1.message };
-                            componentRef.invokeMethodAsync("ReceiveError", mediaError);
-                            throw exception_1;
-                        case 4:
                             videoElement.srcObject = videoElement.mediaStream;
                             videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
                             videoElement.volume = 0;
@@ -108,13 +101,19 @@ var BlazorMedia;
                             videoElement.mediaRecorder.onerror = function (e) { return __awaiter(_this, void 0, void 0, function () {
                                 var mediaError;
                                 return __generator(this, function (_a) {
-                                    mediaError = { Type: 1, Message: e.error.message };
+                                    mediaError = { Type: 1, Message: "" };
                                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                                     return [2 /*return*/];
                                 });
                             }); };
                             videoElement.mediaRecorder.start(timeslice);
-                            return [2 /*return*/];
+                            return [3 /*break*/, 4];
+                        case 3:
+                            exception_1 = _b.sent();
+                            mediaError = { Type: 0, Message: exception_1.message };
+                            componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
                     }
                 });
             });

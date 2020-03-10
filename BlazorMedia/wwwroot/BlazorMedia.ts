@@ -51,27 +51,27 @@ namespace BlazorMedia {
 
             try {
                 videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+                videoElement.srcObject = videoElement.mediaStream;
+                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
+                videoElement.volume = 0;
+                videoElement.mediaRecorder.ondataavailable = async (e) => {
+                    let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
+                    let buffer = Array.from(uintArr);
+                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                };
+
+                videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
+                    var mediaError = { Type: 1, Message: "" }
+                    componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                };
+
+                videoElement.mediaRecorder.start(timeslice);
             }
             catch (exception) {
                 var mediaError = { Type: 0, Message: exception.message }
                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
-                throw exception;
+                
             }
-            videoElement.srcObject = videoElement.mediaStream;
-            videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
-            videoElement.volume = 0;
-            videoElement.mediaRecorder.ondataavailable = async (e) => {
-                let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
-                let buffer = Array.from(uintArr);
-                componentRef.invokeMethodAsync("ReceiveData", buffer);
-            };
-
-            videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
-                var mediaError = { Type: 1, Message: e.error.message }
-                componentRef.invokeMethodAsync("ReceiveError", mediaError);
-            };
-
-            videoElement.mediaRecorder.start(timeslice);
         }
 
         static async UninitializeMediaStream(videoElement: BlazorMediaVideoElement) {
