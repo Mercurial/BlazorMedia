@@ -3,16 +3,25 @@ using Microsoft.JSInterop;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using BlazorMedia.Model;
+
 namespace BlazorMedia
 {
     public class VideoMediaViewModel : ComponentBase, IDisposable
     {
         [Inject]
         IJSRuntime JS { get; set; }
+
         protected ElementReference VideoElementRef { get; set; }
+
         [Parameter]
         public EventCallback<byte[]> OnDataReceived { get; set; }
+
+        [Parameter]
+        public EventCallback<MediaError> OnError { get; set; }
+
         private int _timeslice = 0;
+
         [Parameter]
         public int Timeslice
         {
@@ -63,23 +72,20 @@ namespace BlazorMedia
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected async Task InitializeComponentAsync()
+        protected BlazorMediaAPI BlazorMediaAPI { get; set; }
+
+        public async Task InitializeComponentAsync()
         {
             if (!IsInitialized)
             {
-                await BlazorMediaAPI.InitializeMediaStreamAsync(JS, Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId);
+                BlazorMediaAPI = new BlazorMediaAPI(JS);
+                await BlazorMediaAPI.Initialize(Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, DotNetObjectReference.Create(this));
                 IsInitialized = true;
             }
-
-            await JS.InvokeAsync<dynamic>(
-                "BlazorMedia.BlazorMediaInterop.InitializeVideoElement",
-                VideoElementRef,
-                DotNetObjectReference.Create(this),
-                Timeslice);
         }
 
         [JSInvokable]
-        public void ReceiveDataAsync(int[] data)
+        public void ReceiveData(int[] data)
         {
             /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
             byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
@@ -87,26 +93,20 @@ namespace BlazorMedia
                 OnDataReceived.InvokeAsync(buffer);
         }
 
-        public async void Dispose()
+        [JSInvokable]
+        public void ReceiveError(MediaError mediaError)
         {
-            try
-            {
-                if (IsInitialized)
-                {
-                    await JS.InvokeAsync<dynamic>(
-                        "BlazorMedia.BlazorMediaInterop.DisposeVideoElement",
-                        VideoElementRef);
-
-                    await BlazorMediaAPI.UnInitializeMediaStreamAsync(JS);
-
-                    IsInitialized = false;
-                }
-            }
-            catch
-            {
-                // Page has been reloaded, API is not available
-            }
+            if (OnError.HasDelegate)
+                OnError.InvokeAsync(mediaError);
         }
 
+        public async void Dispose()
+        {
+            if (IsInitialized)
+            {
+                await BlazorMediaAPI.UnInitialize(VideoElementRef);
+                IsInitialized = false;
+            }
+        }
     }
 }

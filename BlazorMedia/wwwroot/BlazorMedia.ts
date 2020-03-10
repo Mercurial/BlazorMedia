@@ -3,8 +3,8 @@
 
 interface BlazorMediaVideoElement extends HTMLVideoElement {
     mediaRecorder: MediaRecorder;
+    mediaStream: MediaStream;
 }
-
 namespace BlazorMedia {
     export class BlazorMediaInterop {
 
@@ -25,9 +25,8 @@ namespace BlazorMedia {
 
         }
 
-        private static MediaStream: MediaStream;
 
-        static async InitializeMediaStream(width: number = 640, height: number = 480, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "") {
+        static async Initialize(width: number = 640, height: number = 480, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
 
             BlazorMediaInterop.constraints = {
                 audio: {
@@ -44,37 +43,55 @@ namespace BlazorMedia {
                 }
             };
 
-            if(canCaptureAudio == false) {
+            if (canCaptureAudio == false) {
                 BlazorMediaInterop.constraints.audio = false as any;
             }
-            BlazorMediaInterop.UninitializeMediaStream();
-            BlazorMediaInterop.MediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+
+            BlazorMediaInterop.Uninitialize(videoElement);
+
+            try {
+                videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
+                videoElement.srcObject = videoElement.mediaStream;
+                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
+                videoElement.volume = 0;
+                videoElement.mediaRecorder.ondataavailable = async (e) => {
+                    let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
+                    let buffer = Array.from(uintArr);
+                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                };
+
+                videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
+                    var mediaError = { Type: 1, Message: "" }
+                    componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                };
+
+                videoElement.mediaRecorder.start(timeslice);
+            }
+            catch (exception) {
+                var mediaError = { Type: 0, Message: exception.message }
+                componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                
+            }
         }
 
-        static async UninitializeMediaStream() {
-            if (BlazorMediaInterop.MediaStream) {
-                let tracks = BlazorMediaInterop.MediaStream.getTracks();
+        static async Uninitialize(videoElement: BlazorMediaVideoElement) {
+            if (videoElement.mediaStream) {
+                let stream = videoElement.mediaStream;
+                let tracks = stream.getTracks();
                 let track: MediaStreamTrack | undefined;
                 while (track = tracks.pop()) {
                     track.stop();
-                    BlazorMediaInterop.MediaStream.removeTrack(track);
+                    stream.removeTrack(track);
                 }
             }
         }
 
-        static async InitializeVideoElement(videoElement: BlazorMediaVideoElement, componentRef: any, timeslice: number = 0) {
-            if (!BlazorMediaInterop.MediaStream) throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
+        static async DeviceChange(componentRef: any) {
+            navigator.mediaDevices.ondevicechange = async (e) => {
+                var newDevices = await navigator.mediaDevices.enumerateDevices();
 
-            videoElement.srcObject = BlazorMediaInterop.MediaStream;
-            videoElement.volume = 0;
-            videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
-
-            videoElement.mediaRecorder.ondataavailable = async (e) => {
-                let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
-                let buffer = Array.from(uintArr);
-                componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
-            };
-            videoElement.mediaRecorder.start(timeslice);
+                componentRef.invokeMethodAsync("OnDeviceChange", newDevices);
+            }
         }
 
         static async DisposeVideoElement(videoElement: BlazorMediaVideoElement) {

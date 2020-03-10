@@ -17,17 +17,18 @@ namespace BlazorMedia.Demo
         protected List<MediaDeviceInfo> Microphones = new List<MediaDeviceInfo>();
         protected string SelectedCamera = string.Empty;
         protected string SelectedMicrophone = string.Empty;
-
+        protected BlazorMediaAPI BlazorMediaAPI { get; set; }
         protected override async Task OnInitializedAsync()
         {
+            BlazorMediaAPI = new BlazorMediaAPI(JSRuntime);
             await base.OnInitializedAsync();
         }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 await FetchDeviceListAsync();
+                BlazorMediaAPI.OnDeviceChanged += BlazorMedia_DeviceChanged;
             }
             await base.OnAfterRenderAsync(firstRender);
             await InvokeAsync(StateHasChanged);
@@ -38,29 +39,34 @@ namespace BlazorMedia.Demo
             Console.WriteLine(data.Length);
         }
 
+        protected void OnError(MediaError error)
+        {
+            Console.WriteLine(error.Message);
+        }
+
         protected async Task FetchDeviceListAsync()
         {
-            var Devices = await BlazorMediaAPI.EnumerateMediaDevices(JSRuntime);
-
+            var Devices = await BlazorMediaAPI.EnumerateMediaDevices();
+            
             foreach (MediaDeviceInfo mdi in Devices)
             {
-                if (mdi.kind == "audioinput")
+                if (mdi.Kind == "audioinput")
                 {
                     Microphones.Add(mdi);
                 }
-                if (mdi.kind == "videoinput")
+                if (mdi.Kind == "videoinput")
                 {
                     Cameras.Add(mdi);
                 }
             }
 
-            if(Microphones.Count > 0)
+            if (Microphones.Count > 0)
             {
-                SelectedMicrophone = Microphones[0].deviceId;
+                SelectedMicrophone = Microphones[0].DeviceId;
             }
-            if(Cameras.Count > 0)
+            if (Cameras.Count > 0)
             {
-                SelectedCamera = Cameras[0].deviceId;
+                SelectedCamera = Cameras[0].DeviceId;
             }
         }
 
@@ -79,7 +85,27 @@ namespace BlazorMedia.Demo
             IsRecording = !IsRecording;
         }
 
+        public void BlazorMedia_DeviceChanged(object sender, DeviceChangeEventArgs e)
+        {
+            // Console.WriteLine("Total :" + e.Devices.Count);
+            // foreach (var device in e.Devices)
+            // {
+            //     Console.WriteLine(device.Label);
+            // }
+
+            Console.WriteLine("Total removedDevices:" + e.RemovedDevices.Count);
+            foreach (var device in e.RemovedDevices)
+            {
+                Console.WriteLine(device.Label);
+            }
+
+            Console.WriteLine("Total AddedDevices:" + e.AddedDevices.Count);
+            foreach (var device in e.AddedDevices)
+            {
+                Console.WriteLine(device.Label);
+            }
+        }
+
     }
- 
+
 }
- 

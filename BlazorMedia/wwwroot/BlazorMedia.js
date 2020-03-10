@@ -42,14 +42,16 @@ var BlazorMedia;
     var BlazorMediaInterop = /** @class */ (function () {
         function BlazorMediaInterop() {
         }
-        BlazorMediaInterop.InitializeMediaStream = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId) {
+        BlazorMediaInterop.Initialize = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeslice, videoElement, componentRef) {
             if (width === void 0) { width = 640; }
             if (height === void 0) { height = 480; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
             if (cameraDeviceId === void 0) { cameraDeviceId = ""; }
             if (microphoneDeviceId === void 0) { microphoneDeviceId = ""; }
+            if (timeslice === void 0) { timeslice = 0; }
             return __awaiter(this, void 0, void 0, function () {
-                var _a;
+                var _a, exception_1, mediaError;
+                var _this = this;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -69,60 +71,86 @@ var BlazorMedia;
                             };
                             if (canCaptureAudio == false) {
                                 BlazorMediaInterop.constraints.audio = false;
-                                console.log("was here");
                             }
-                            BlazorMediaInterop.UninitializeMediaStream();
-                            _a = BlazorMediaInterop;
-                            return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
+                            BlazorMediaInterop.Uninitialize(videoElement);
+                            _b.label = 1;
                         case 1:
-                            _a.MediaStream = _b.sent();
-                            return [2 /*return*/];
+                            _b.trys.push([1, 3, , 4]);
+                            _a = videoElement;
+                            return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
+                        case 2:
+                            _a.mediaStream = _b.sent();
+                            videoElement.srcObject = videoElement.mediaStream;
+                            videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
+                            videoElement.volume = 0;
+                            videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                                var uintArr, _a, buffer;
+                                return __generator(this, function (_b) {
+                                    switch (_b.label) {
+                                        case 0:
+                                            _a = Uint8Array.bind;
+                                            return [4 /*yield*/, new Response(e.data).arrayBuffer()];
+                                        case 1:
+                                            uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
+                                            buffer = Array.from(uintArr);
+                                            componentRef.invokeMethodAsync("ReceiveData", buffer);
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); };
+                            videoElement.mediaRecorder.onerror = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                                var mediaError;
+                                return __generator(this, function (_a) {
+                                    mediaError = { Type: 1, Message: "" };
+                                    componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                                    return [2 /*return*/];
+                                });
+                            }); };
+                            videoElement.mediaRecorder.start(timeslice);
+                            return [3 /*break*/, 4];
+                        case 3:
+                            exception_1 = _b.sent();
+                            mediaError = { Type: 0, Message: exception_1.message };
+                            componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
                     }
                 });
             });
         };
-        BlazorMediaInterop.UninitializeMediaStream = function () {
+        BlazorMediaInterop.Uninitialize = function (videoElement) {
             return __awaiter(this, void 0, void 0, function () {
-                var tracks, track;
+                var stream, tracks, track;
                 return __generator(this, function (_a) {
-                    if (BlazorMediaInterop.MediaStream) {
-                        tracks = BlazorMediaInterop.MediaStream.getTracks();
+                    if (videoElement.mediaStream) {
+                        stream = videoElement.mediaStream;
+                        tracks = stream.getTracks();
                         track = void 0;
                         while (track = tracks.pop()) {
                             track.stop();
-                            BlazorMediaInterop.MediaStream.removeTrack(track);
+                            stream.removeTrack(track);
                         }
                     }
                     return [2 /*return*/];
                 });
             });
         };
-        BlazorMediaInterop.InitializeVideoElement = function (videoElement, componentRef, timeslice) {
-            if (timeslice === void 0) { timeslice = 0; }
+        BlazorMediaInterop.DeviceChange = function (componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 var _this = this;
                 return __generator(this, function (_a) {
-                    if (!BlazorMediaInterop.MediaStream)
-                        throw "MediaStream is not Initialized, please call InitializeMediaStream first.";
-                    videoElement.srcObject = BlazorMediaInterop.MediaStream;
-                    videoElement.volume = 0;
-                    videoElement.mediaRecorder = new MediaRecorder(BlazorMediaInterop.MediaStream);
-                    videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var uintArr, _a, buffer;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
-                                case 0:
-                                    _a = Uint8Array.bind;
-                                    return [4 /*yield*/, new Response(e.data).arrayBuffer()];
+                    navigator.mediaDevices.ondevicechange = function (e) { return __awaiter(_this, void 0, void 0, function () {
+                        var newDevices;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
                                 case 1:
-                                    uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
-                                    buffer = Array.from(uintArr);
-                                    componentRef.invokeMethodAsync("ReceiveDataAsync", buffer);
+                                    newDevices = _a.sent();
+                                    componentRef.invokeMethodAsync("OnDeviceChange", newDevices);
                                     return [2 /*return*/];
                             }
                         });
                     }); };
-                    videoElement.mediaRecorder.start(timeslice);
                     return [2 /*return*/];
                 });
             });
