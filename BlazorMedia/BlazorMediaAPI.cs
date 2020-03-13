@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 namespace BlazorMedia
 {
     public class BlazorMediaAPI
     {
         public IJSRuntime JSRuntime { get; set; }
         public List<MediaDeviceInfo> CurrentMediaDevices { get; set; } = new List<MediaDeviceInfo>();
+        public event EventHandler<DeviceChangeEventArgs> OnDeviceChanged;
 
         public BlazorMediaAPI(IJSRuntime jsRuntime)
         {
@@ -23,7 +25,7 @@ namespace BlazorMedia
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Initialize", width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
         }
 
-        public async Task UnInitialize(ElementReference videoElementRef)
+        public async Task Uninitialize(ElementReference videoElementRef)
         {
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Uninitialize", videoElementRef);
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DisposeVideoElement", videoElementRef);
@@ -31,18 +33,18 @@ namespace BlazorMedia
 
         public async Task<List<MediaDeviceInfo>> EnumerateMediaDevices()
         {
-            CurrentMediaDevices = await JSRuntime.InvokeAsync<List<MediaDeviceInfo>>("navigator.mediaDevices.enumerateDevices");
+            var devicesJsonArray = await JSRuntime.InvokeAsync<object>("navigator.mediaDevices.enumerateDevices");
+            CurrentMediaDevices = JsonConvert.DeserializeObject<List<MediaDeviceInfo>>(devicesJsonArray.ToString());
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DeviceChange", DotNetObjectReference.Create(this));
+
             return CurrentMediaDevices;
         }
-
-        public event EventHandler<DeviceChangeEventArgs> OnDeviceChanged;
 
         [JSInvokable]
         public void OnDeviceChange(List<MediaDeviceInfo> newDevices)
         {
-            var removedDevices = CurrentMediaDevices.Where(cmd => !newDevices.Any(nd => cmd.Label == nd.Label)).ToList();
-            var addedDevices = newDevices.Where(nd => !CurrentMediaDevices.Any(cmd => cmd.Label == nd.Label)).ToList();
+            var removedDevices = CurrentMediaDevices.Where(cmd => !newDevices.Any(nd => cmd.Name == nd.Name)).ToList();
+            var addedDevices = newDevices.Where(nd => !CurrentMediaDevices.Any(cmd => cmd.Name == nd.Name)).ToList();
             OnDeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
             {
                 Devices = newDevices,

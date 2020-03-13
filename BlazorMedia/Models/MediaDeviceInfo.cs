@@ -1,12 +1,24 @@
 using System;
-
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
 namespace BlazorMedia.Model
 {
+    public enum MediaDeviceKind
+    {
+        AudioInput,
+        VideoInput,
+        AudioOutput,
+        VideoOutput
+    }
+
     public class MediaDeviceInfo
     {
+        [JsonProperty("label")]
+        public string Name { get; set; } = string.Empty;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public MediaDeviceKind Kind { get; set; }
         public string DeviceId { get; set; } = string.Empty;
-        public string Kind { get; set; } = string.Empty;
-        public string Label { get; set; } = string.Empty;
-        public string GroupId { get; set; } = string.Empty;
+
+       
     }
 }

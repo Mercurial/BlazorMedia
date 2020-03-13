@@ -89,7 +89,6 @@ namespace BlazorMedia {
         static async DeviceChange(componentRef: any) {
             navigator.mediaDevices.ondevicechange = async (e) => {
                 var newDevices = await navigator.mediaDevices.enumerateDevices();
-
                 componentRef.invokeMethodAsync("OnDeviceChange", newDevices);
             }
         }

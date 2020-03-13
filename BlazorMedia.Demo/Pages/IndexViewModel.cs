@@ -50,11 +50,11 @@ namespace BlazorMedia.Demo
             
             foreach (MediaDeviceInfo mdi in Devices)
             {
-                if (mdi.Kind == "audioinput")
+                if (mdi.Kind == MediaDeviceKind.AudioInput)
                 {
                     Microphones.Add(mdi);
                 }
-                if (mdi.Kind == "videoinput")
+                if (mdi.Kind == MediaDeviceKind.VideoInput)
                 {
                     Cameras.Add(mdi);
                 }
@@ -96,13 +96,13 @@ namespace BlazorMedia.Demo
             Console.WriteLine("Total removedDevices:" + e.RemovedDevices.Count);
             foreach (var device in e.RemovedDevices)
             {
-                Console.WriteLine(device.Label);
+                Console.WriteLine(device.Name);
             }
 
             Console.WriteLine("Total AddedDevices:" + e.AddedDevices.Count);
             foreach (var device in e.AddedDevices)
             {
-                Console.WriteLine(device.Label);
+                Console.WriteLine(device.Name);
             }
         }
 
