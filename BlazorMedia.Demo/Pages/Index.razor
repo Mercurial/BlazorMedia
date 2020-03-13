@@ -21,7 +21,7 @@ else
         <select id="cameras" value="@SelectedCamera" @onchange="@((e)=>{ OnCameraSelected(e); })">
             @foreach(MediaDeviceInfo mdi in Cameras)
             {
-                <option value="@mdi.DeviceId" >@mdi.Label</option>
+                <option value="@mdi.DeviceId" >@mdi.Name</option>
             }
         </select>
         <p>Selected Camera:@(SelectedCamera)</p>
@@ -33,7 +33,7 @@ else
         <select id="microphones" value="@SelectedMicrophone" @onchange="@((e)=>{ OnMicrophoneSelected(e); })">
             @foreach(MediaDeviceInfo mdi in Microphones)
             {
-                <option value="@mdi.DeviceId">@mdi.Label</option>
+                <option value="@mdi.DeviceId">@mdi.Name</option>
             }
         </select>
         <p>Selected Microphone:@(SelectedMicrophone)</p>

@@ -34,7 +34,6 @@ namespace BlazorMedia
                 if (_timeslice != value)
                 {
                     _timeslice = value;
-                    JS.InvokeAsync<dynamic>("BlazorMedia.BlazorMediaInterop.SetVideoRecorderTimeslice", VideoElementRef, value);
                 }
             }
         }
@@ -68,7 +67,6 @@ namespace BlazorMedia
             {
                 await InitializeComponentAsync();
             }
-
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -104,7 +102,7 @@ namespace BlazorMedia
         {
             if (IsInitialized)
             {
-                await BlazorMediaAPI.UnInitialize(VideoElementRef);
+                await BlazorMediaAPI.Uninitialize(VideoElementRef);
                 IsInitialized = false;
             }
         }
