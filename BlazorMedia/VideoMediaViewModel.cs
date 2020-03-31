@@ -102,8 +102,17 @@ namespace BlazorMedia
         {
             if (IsInitialized)
             {
-                await BlazorMediaAPI.Uninitialize(VideoElementRef);
                 IsInitialized = false;
+                try
+                {
+                    await BlazorMediaAPI.Uninitialize(VideoElementRef);
+                    
+                }
+                catch(Exception e)
+                {
+                    // Exception occurs when a task is cancelled
+                    Console.WriteLine(e.Message);
+                }
             }
         }
     }

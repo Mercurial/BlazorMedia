@@ -27,6 +27,8 @@ namespace BlazorMedia.Demo
         {
             if (firstRender)
             {
+                // Should call this before listening to device changes.
+                await BlazorMediaAPI.StartListeningToDeviceChange();
                 await FetchDeviceListAsync();
                 BlazorMediaAPI.OnDeviceChanged += BlazorMedia_DeviceChanged;
             }

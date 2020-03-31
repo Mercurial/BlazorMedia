@@ -17,12 +17,16 @@ namespace BlazorMedia
         public BlazorMediaAPI(IJSRuntime jsRuntime)
         {
             JSRuntime = jsRuntime;
-
         }
 
         public async Task Initialize(int width = 640, int height = 480, bool canCaptureAudio = true, string cameraDeviceId = "", string microphoneDeviceId = "", int timeSlice = 100, object videoElementRef = null, object componentRef = null)
         {
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Initialize", width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
+        }
+
+        public async Task StartListeningToDeviceChange()
+        {
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DeviceChange", DotNetObjectReference.Create(this));
         }
 
         public async Task Uninitialize(ElementReference videoElementRef)
@@ -35,14 +39,13 @@ namespace BlazorMedia
         {
             var devicesJsonArray = await JSRuntime.InvokeAsync<object>("navigator.mediaDevices.enumerateDevices");
             CurrentMediaDevices = JsonConvert.DeserializeObject<List<MediaDeviceInfo>>(devicesJsonArray.ToString());
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DeviceChange", DotNetObjectReference.Create(this));
-
             return CurrentMediaDevices;
         }
 
         [JSInvokable]
-        public void OnDeviceChange(List<MediaDeviceInfo> newDevices)
+        public void OnDeviceChange(object newDevicesObject)
         {
+            var newDevices = JsonConvert.DeserializeObject<List<MediaDeviceInfo>>(newDevicesObject.ToString());
             var removedDevices = CurrentMediaDevices.Where(cmd => !newDevices.Any(nd => cmd.Name == nd.Name)).ToList();
             var addedDevices = newDevices.Where(nd => !CurrentMediaDevices.Any(cmd => cmd.Name == nd.Name)).ToList();
             OnDeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
