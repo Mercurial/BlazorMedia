@@ -110,6 +110,9 @@ var BlazorMedia;
                                     return [2 /*return*/];
                                 });
                             }); };
+                            videoElement.mediaRecorder.onstart = function () {
+                                componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
+                            };
                             videoElement.mediaRecorder.start(timeslice);
                             return [3 /*break*/, 4];
                         case 3:

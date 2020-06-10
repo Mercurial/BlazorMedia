@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using BlazorMedia.Model;
+using BlazorMedia.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using BlazorMedia
-@using BlazorMedia.Model
+@using BlazorMedia.Models
 
 @inherits IndexViewModel
 
@@ -14,6 +14,7 @@
         OnData="OnData"
         OnError="OnError"
         OnFPS="OnFPS"
+        OnStart="OnStart"
         Timeslice="33"
         Width="@Width"
         Height="@Height"
@@ -42,6 +43,7 @@
         <option value="3860x2160">4K</option>
     </select>
     <p>Selected Quality:@SelectedQuality</p>
+    <p>Effective Quality: @($"{EffectiveWidth}x{EffectiveHeight}")</p>
 </div>
 @if(Cameras.Count > 0) {
     <div>

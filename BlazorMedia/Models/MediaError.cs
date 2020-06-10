@@ -1,6 +1,6 @@
 using System;
 
-namespace BlazorMedia.Model
+namespace BlazorMedia.Models
 {
     public enum ErrorType
     {

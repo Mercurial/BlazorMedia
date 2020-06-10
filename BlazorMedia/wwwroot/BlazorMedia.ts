@@ -73,6 +73,9 @@ namespace BlazorMedia {
                     let mediaError = { Type: 1, Message: "" }
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                 };
+                videoElement.mediaRecorder.onstart = () => {
+                    componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
+                };
                 videoElement.mediaRecorder.start(timeslice);
             }
             catch (exception) {

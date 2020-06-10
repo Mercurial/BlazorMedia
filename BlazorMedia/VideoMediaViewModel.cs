@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using BlazorMedia.Model;
+using BlazorMedia.Models;
 
 namespace BlazorMedia
 {
@@ -23,6 +23,9 @@ namespace BlazorMedia
 
         [Parameter]
         public EventCallback<int> OnFPS { get; set; }
+
+        [Parameter]
+        public EventCallback<MediaStartEventArgs> OnStart { get; set; }
 
         private int _timeslice = 0;
 
@@ -115,6 +118,13 @@ namespace BlazorMedia
         {
             if (OnFPS.HasDelegate)
                 OnFPS.InvokeAsync(fps);
+        }
+
+        [JSInvokable]
+        public void ReceiveStart(int width, int height)
+        {
+            if (OnStart.HasDelegate)
+                OnStart.InvokeAsync(new MediaStartEventArgs { Width = width, Height = height });
         }
 
         public async Task ReloadAsync()

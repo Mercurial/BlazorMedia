@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BlazorMedia.Model;
+using BlazorMedia.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -21,7 +21,9 @@ namespace BlazorMedia.Demo
         protected string SelectedQuality { get; set; } = "1080p";
         protected BlazorMediaAPI BlazorMediaAPI { get; set; }
         protected int Width { get; set; } = 1920;
+        protected int EffectiveWidth { get; set; }
         protected int Height { get; set; } = 1080;
+        protected int EffectiveHeight { get; set; }
         protected int Framerate { get; set; } = 30;
         protected int FPS { get; set; }
         protected int KBps { get; set; }
@@ -65,6 +67,13 @@ namespace BlazorMedia.Demo
         protected async void OnFPS(int fps)
         {
             FPS = fps;
+            await InvokeAsync(StateHasChanged);
+        }
+
+        protected async void OnStart(MediaStartEventArgs e)
+        {
+            EffectiveWidth = e.Width;
+            EffectiveHeight = e.Height;
             await InvokeAsync(StateHasChanged);
         }
 
