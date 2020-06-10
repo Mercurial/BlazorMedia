@@ -15,10 +15,14 @@ namespace BlazorMedia
         protected ElementReference VideoElementRef { get; set; }
 
         [Parameter]
-        public EventCallback<byte[]> OnDataReceived { get; set; }
+        public EventCallback<byte[]> OnData { get; set; }
 
         [Parameter]
         public EventCallback<MediaError> OnError { get; set; }
+
+
+        [Parameter]
+        public EventCallback<int> OnFPS { get; set; }
 
         private int _timeslice = 0;
 
@@ -43,6 +47,9 @@ namespace BlazorMedia
 
         [Parameter]
         public int Height { get; set; } = 480;
+
+        [Parameter]
+        public int Framerate {get;set;} = 30;
 
         [Parameter]
         public bool RecordAudio { get; set; } = false;
@@ -77,7 +84,7 @@ namespace BlazorMedia
             if (!IsInitialized)
             {
                 BlazorMediaAPI = new BlazorMediaAPI(JS);
-                await BlazorMediaAPI.Initialize(Width, Height, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, DotNetObjectReference.Create(this));
+                await ReloadAsync();
                 IsInitialized = true;
             }
         }
@@ -85,10 +92,12 @@ namespace BlazorMedia
         [JSInvokable]
         public void ReceiveData(int[] data)
         {
-            /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
-            byte[] buffer = data.Cast<int>().Select(i => (byte)i).ToArray();
-            if (OnDataReceived.HasDelegate)
-                OnDataReceived.InvokeAsync(buffer);
+            if (OnData.HasDelegate)
+            {
+                /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
+                byte[] buffer = data.Select(i => (byte)i).ToArray(); 
+                OnData.InvokeAsync(buffer);
+            }
         }
 
         [JSInvokable]
@@ -98,6 +107,21 @@ namespace BlazorMedia
                 OnError.InvokeAsync(mediaError);
         }
 
+        [JSInvokable]
+        public void ReceiveFPS(int fps)
+        {
+            if(OnFPS.HasDelegate)
+                OnFPS.InvokeAsync(fps);
+        }
+
+        public async Task ReloadAsync()
+        {
+            var componentRef = DotNetObjectReference.Create<VideoMediaViewModel>(this);
+            await BlazorMediaAPI.RemoveBlazorFPSListenerAsync(VideoElementRef);
+            await BlazorMediaAPI.AddBlazorFPSListenerAsync(VideoElementRef, componentRef);
+            await BlazorMediaAPI.InitializeAsync(Width, Height, Framerate, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, componentRef);
+        }
+
         public async void Dispose()
         {
             if (IsInitialized)
@@ -105,7 +129,7 @@ namespace BlazorMedia
                 IsInitialized = false;
                 try
                 {
-                    await BlazorMediaAPI.Uninitialize(VideoElementRef);
+                    await BlazorMediaAPI.Destroy(VideoElementRef);
                     
                 }
                 catch(Exception e)

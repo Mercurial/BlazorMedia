@@ -4,17 +4,23 @@
 
 @inherits IndexViewModel
 
-@if(IsRecording)
-{
-    <VideoMedia OnDataReceived="@OnDataReceived" OnError="@OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
-}
-else
-{
-    <VideoMedia OnError="@OnError" Timeslice="100" Width="1024" Height="768" RecordAudio="true" CameraDeviceId="@SelectedCamera" MicrophoneDeviceId="@SelectedMicrophone"></VideoMedia>
-}
-
-<button @onclick="@(()=>{ OnToggleRecordingPressed(); })">Toggle Recording</button>
-
+<div>
+    FPS: @FPS, KBps: @KBps
+</div>
+<VideoMedia 
+    @ref="VideoMediaComponent"
+    OnData="OnData"
+    OnError="OnError"
+    OnFPS="OnFPS"
+    Timeslice="33"
+    Width="1920"
+    Height="1080"
+    RecordAudio="true"
+    CameraDeviceId="@SelectedCamera"
+    MicrophoneDeviceId="@SelectedMicrophone" />
+<div>
+    <button @onclick="OnToggleRecordingPressed">Reload</button>
+</div>
 @if(Cameras.Count > 0) {
     <div>
         <label for="cameras">Cameras: </label>

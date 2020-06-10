@@ -19,24 +19,39 @@ namespace BlazorMedia
             JSRuntime = jsRuntime;
         }
 
-        public async Task Initialize(int width = 640, int height = 480, bool canCaptureAudio = true, string cameraDeviceId = "", string microphoneDeviceId = "", int timeSlice = 100, object videoElementRef = null, object componentRef = null)
+        public async Task InitializeAsync(int width = 640, int height = 480, int framerate = 60, bool canCaptureAudio = true, string cameraDeviceId = "", string microphoneDeviceId = "", int timeSlice = 100, ElementReference videoElementRef = default(ElementReference), DotNetObjectReference<VideoMediaViewModel> componentRef = null)
         {
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Initialize", width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Initialize", width, height, framerate, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeSlice, videoElementRef, componentRef);
         }
 
-        public async Task StartListeningToDeviceChange()
+        public async Task StartDeviceChangeListenerAsync()
         {
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DeviceChange", DotNetObjectReference.Create(this));
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.StartBlazorDeviceListener", DotNetObjectReference.Create(this));
         }
 
-        public async Task Uninitialize(ElementReference videoElementRef)
+        public async Task StopDeviceChangeListenerAsync()
         {
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Uninitialize", videoElementRef);
-            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.DisposeVideoElement", videoElementRef);
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.StopBlazorDeviceListener", DotNetObjectReference.Create(this));
+        }
+
+        public async Task AddBlazorFPSListenerAsync(ElementReference videoElementRef, DotNetObjectReference<VideoMediaViewModel> componentRef)
+        {
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.AddBlazorFPSListener", videoElementRef, componentRef);
+        }
+
+        public async Task RemoveBlazorFPSListenerAsync(ElementReference videoElementRef)
+        {
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.RemoveBlazorFPSListener", videoElementRef);
+        }
+
+        public async Task Destroy(ElementReference videoElementRef)
+        {
+            await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Destroy", videoElementRef);
         }
 
         public async Task<List<MediaDeviceInfo>> EnumerateMediaDevices()
         {
+            // @TODO implement proper System.Text js
             var devicesJsonArray = await JSRuntime.InvokeAsync<object>("navigator.mediaDevices.enumerateDevices");
             CurrentMediaDevices = JsonConvert.DeserializeObject<List<MediaDeviceInfo>>(devicesJsonArray.ToString());
             return CurrentMediaDevices;
@@ -56,6 +71,5 @@ namespace BlazorMedia
             });
             CurrentMediaDevices = newDevices;
         }
-
     }
 }

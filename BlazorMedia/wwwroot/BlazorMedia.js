@@ -1,6 +1,4 @@
 "use strict";
-// This file is to show how a library package may provide JavaScript interop features
-// wrapped in a .NET API
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,9 +40,10 @@ var BlazorMedia;
     var BlazorMediaInterop = /** @class */ (function () {
         function BlazorMediaInterop() {
         }
-        BlazorMediaInterop.Initialize = function (width, height, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeslice, videoElement, componentRef) {
+        BlazorMediaInterop.Initialize = function (width, height, frameRate, canCaptureAudio, cameraDeviceId, microphoneDeviceId, timeslice, videoElement, componentRef) {
             if (width === void 0) { width = 640; }
             if (height === void 0) { height = 480; }
+            if (frameRate === void 0) { frameRate = 60; }
             if (canCaptureAudio === void 0) { canCaptureAudio = true; }
             if (cameraDeviceId === void 0) { cameraDeviceId = ""; }
             if (microphoneDeviceId === void 0) { microphoneDeviceId = ""; }
@@ -66,13 +65,16 @@ var BlazorMedia;
                                     height: {
                                         ideal: height
                                     },
+                                    frameRate: {
+                                        ideal: frameRate
+                                    },
                                     deviceId: cameraDeviceId,
                                 }
                             };
                             if (canCaptureAudio == false) {
                                 BlazorMediaInterop.constraints.audio = false;
                             }
-                            BlazorMediaInterop.Uninitialize(videoElement);
+                            BlazorMediaInterop.Destroy(videoElement);
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 3, , 4]);
@@ -118,7 +120,7 @@ var BlazorMedia;
                 });
             });
         };
-        BlazorMediaInterop.Uninitialize = function (videoElement) {
+        BlazorMediaInterop.Destroy = function (videoElement) {
             return __awaiter(this, void 0, void 0, function () {
                 var stream, tracks, track;
                 return __generator(this, function (_a) {
@@ -131,11 +133,14 @@ var BlazorMedia;
                             stream.removeTrack(track);
                         }
                     }
+                    if (videoElement && videoElement.mediaRecorder) {
+                        videoElement.mediaRecorder.stop();
+                    }
                     return [2 /*return*/];
                 });
             });
         };
-        BlazorMediaInterop.DeviceChange = function (componentRef) {
+        BlazorMediaInterop.StartBlazorDeviceListener = function (componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 var _this = this;
                 return __generator(this, function (_a) {
@@ -155,24 +160,33 @@ var BlazorMedia;
                 });
             });
         };
-        BlazorMediaInterop.DisposeVideoElement = function (videoElement) {
+        BlazorMediaInterop.StopBlazorDeviceListener = function (componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    if (videoElement && videoElement.mediaRecorder) {
-                        videoElement.mediaRecorder.stop();
-                    }
+                    navigator.mediaDevices.ondevicechange = null;
                     return [2 /*return*/];
                 });
             });
         };
-        BlazorMediaInterop.SetVideoRecorderTimeslice = function (videoElement, timeslice) {
-            if (timeslice === void 0) { timeslice = 0; }
+        BlazorMediaInterop.AddBlazorFPSListener = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    if (videoElement && videoElement.mediaRecorder) {
-                        videoElement.mediaRecorder.stop();
-                        videoElement.mediaRecorder.start(timeslice);
-                    }
+                    videoElement.lastFPS = 0;
+                    // FPS Counter
+                    videoElement.fpsIntervalId = setInterval(function () {
+                        var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                        videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                        componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                    }, 1000);
+                    return [2 /*return*/];
+                });
+            });
+        };
+        BlazorMediaInterop.RemoveBlazorFPSListener = function (videoElement) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (videoElement.fpsIntervalId)
+                        clearInterval(videoElement.fpsIntervalId);
                     return [2 /*return*/];
                 });
             });
@@ -188,6 +202,9 @@ var BlazorMedia;
                 },
                 height: {
                     ideal: 480
+                },
+                frameRate: {
+                    ideal: 60
                 },
                 deviceId: ""
             },

@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/dom-mediacapture-record": "^1.0.1",
-    "typescript": "^3.7.4"
+    "@types/dom-mediacapture-record": "^1.0.6",
+    "typescript": "^3.9.5"
   }
 }
