@@ -49,7 +49,7 @@ namespace BlazorMedia
         public int Height { get; set; } = 480;
 
         [Parameter]
-        public int Framerate {get;set;} = 30;
+        public int Framerate { get; set; } = 30;
 
         [Parameter]
         public bool RecordAudio { get; set; } = false;
@@ -65,6 +65,9 @@ namespace BlazorMedia
 
         [Parameter]
         public string Class { get; set; } = string.Empty;
+
+        [Parameter]
+        public string Style { get; set; } = string.Empty;
 
         protected bool IsInitialized { get; set; } = false;
 
@@ -95,7 +98,7 @@ namespace BlazorMedia
             if (OnData.HasDelegate)
             {
                 /// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
-                byte[] buffer = data.Select(i => (byte)i).ToArray(); 
+                byte[] buffer = data.Select(i => (byte)i).ToArray();
                 OnData.InvokeAsync(buffer);
             }
         }
@@ -110,7 +113,7 @@ namespace BlazorMedia
         [JSInvokable]
         public void ReceiveFPS(int fps)
         {
-            if(OnFPS.HasDelegate)
+            if (OnFPS.HasDelegate)
                 OnFPS.InvokeAsync(fps);
         }
 
@@ -118,8 +121,13 @@ namespace BlazorMedia
         {
             var componentRef = DotNetObjectReference.Create<VideoMediaViewModel>(this);
             await BlazorMediaAPI.RemoveBlazorFPSListenerAsync(VideoElementRef);
-            await BlazorMediaAPI.AddBlazorFPSListenerAsync(VideoElementRef, componentRef);
             await BlazorMediaAPI.InitializeAsync(Width, Height, Framerate, RecordAudio, CameraDeviceId, MicrophoneDeviceId, Timeslice, VideoElementRef, componentRef);
+            await BlazorMediaAPI.AddBlazorFPSListenerAsync(VideoElementRef, componentRef);
+        }
+
+        public async Task<string> CaptureImageAsync()
+        {
+            return await BlazorMediaAPI.CaptureImageAsync(VideoElementRef);
         }
 
         public async void Dispose()
@@ -130,9 +138,9 @@ namespace BlazorMedia
                 try
                 {
                     await BlazorMediaAPI.Destroy(VideoElementRef);
-                    
+
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     // Exception occurs when a task is cancelled
                     Console.WriteLine(e.Message);

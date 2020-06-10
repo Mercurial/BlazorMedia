@@ -54,6 +54,8 @@ var BlazorMedia;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            videoElement.bmWidth = width;
+                            videoElement.bmHeight = height;
                             BlazorMediaInterop.constraints = {
                                 audio: {
                                     deviceId: microphoneDeviceId,
@@ -136,6 +138,7 @@ var BlazorMedia;
                     if (videoElement && videoElement.mediaRecorder) {
                         videoElement.mediaRecorder.stop();
                     }
+                    BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
                     return [2 /*return*/];
                 });
             });
@@ -188,6 +191,19 @@ var BlazorMedia;
                     if (videoElement.fpsIntervalId)
                         clearInterval(videoElement.fpsIntervalId);
                     return [2 /*return*/];
+                });
+            });
+        };
+        BlazorMediaInterop.CaptureImage = function (videoElement) {
+            return __awaiter(this, void 0, void 0, function () {
+                var canvas, context;
+                return __generator(this, function (_a) {
+                    canvas = document.createElement("canvas");
+                    context = canvas.getContext("2d");
+                    canvas.width = videoElement.bmWidth;
+                    canvas.height = videoElement.bmHeight;
+                    context.drawImage(videoElement, 0, 0, videoElement.bmWidth, videoElement.bmHeight);
+                    return [2 /*return*/, canvas.toDataURL('image/png')];
                 });
             });
         };

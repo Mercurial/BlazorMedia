@@ -44,6 +44,11 @@ namespace BlazorMedia
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.RemoveBlazorFPSListener", videoElementRef);
         }
 
+        public async Task<string> CaptureImageAsync(ElementReference videoElementRef)
+        {
+            return await JSRuntime.InvokeAsync<string>("BlazorMedia.BlazorMediaInterop.CaptureImage", videoElementRef);
+        }
+
         public async Task Destroy(ElementReference videoElementRef)
         {
             await JSRuntime.InvokeVoidAsync("BlazorMedia.BlazorMediaInterop.Destroy", videoElementRef);

@@ -16,13 +16,18 @@ namespace BlazorMedia.Demo
         protected bool IsRecording = false;
         protected List<MediaDeviceInfo> Cameras = new List<MediaDeviceInfo>();
         protected List<MediaDeviceInfo> Microphones = new List<MediaDeviceInfo>();
-        protected string SelectedCamera = string.Empty;
-        protected string SelectedMicrophone = string.Empty;
+        protected string SelectedCamera { get; set; } = string.Empty;
+        protected string SelectedMicrophone { get; set; } = string.Empty;
+        protected string SelectedQuality { get; set; } = "1080p";
         protected BlazorMediaAPI BlazorMediaAPI { get; set; }
+        protected int Width { get; set; } = 1920;
+        protected int Height { get; set; } = 1080;
+        protected int Framerate { get; set; } = 30;
         protected int FPS { get; set; }
         protected int KBps { get; set; }
         protected int BytesInSecond { get; set; }
         protected DateTime lastBitRateData { get; set; } = DateTime.Now;
+        protected string PictureData { get; set; }
         protected override async Task OnInitializedAsync()
         {
             BlazorMediaAPI = new BlazorMediaAPI(JSRuntime);
@@ -99,9 +104,22 @@ namespace BlazorMedia.Demo
             SelectedMicrophone = e.Value.ToString();
             await InvokeAsync(StateHasChanged);
         }
+        protected async void OnQualitySelected(ChangeEventArgs e)
+        {
+            SelectedQuality = e.Value.ToString();
+            Width = int.Parse(SelectedQuality.Split("x")[0]);
+            Height = int.Parse(SelectedQuality.Split("x")[1]);
+            await InvokeAsync(StateHasChanged);
+        }
         protected async void OnToggleRecordingPressed()
         {
             await VideoMediaComponent.ReloadAsync();
+        }
+
+        protected async void OnTakePhotoPressed()
+        {
+            PictureData = await VideoMediaComponent.CaptureImageAsync();
+            await InvokeAsync(StateHasChanged);
         }
 
         public void BlazorMedia_DeviceChanged(object sender, DeviceChangeEventArgs e)

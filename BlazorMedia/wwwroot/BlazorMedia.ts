@@ -4,6 +4,8 @@ interface BlazorMediaVideoElement extends HTMLVideoElement {
     fpsIntervalId: number;
     lastFPSTime: number;
     lastFPS: number;
+    bmWidth: number;
+    bmHeight: number;
 }
 namespace BlazorMedia {
     export class BlazorMediaInterop {
@@ -30,7 +32,8 @@ namespace BlazorMedia {
 
 
         static async Initialize(width: number = 640, height: number = 480, frameRate = 60, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
-
+            videoElement.bmWidth = width;
+            videoElement.bmHeight = height;
             BlazorMediaInterop.constraints = {
                 audio: {
                     deviceId: microphoneDeviceId,
@@ -67,13 +70,13 @@ namespace BlazorMedia {
                 };
 
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
-                    var mediaError = { Type: 1, Message: "" }
+                    let mediaError = { Type: 1, Message: "" }
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                 };
                 videoElement.mediaRecorder.start(timeslice);
             }
             catch (exception) {
-                var mediaError = { Type: 0, Message: exception.message }
+                let mediaError = { Type: 0, Message: exception.message }
                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
 
             }
@@ -92,11 +95,12 @@ namespace BlazorMedia {
             if (videoElement && videoElement.mediaRecorder) {
                 videoElement.mediaRecorder.stop();
             }
+            BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
         }
 
         static async StartBlazorDeviceListener(componentRef: any) {
             navigator.mediaDevices.ondevicechange = async (e) => {
-                var newDevices = await navigator.mediaDevices.enumerateDevices();
+                let newDevices = await navigator.mediaDevices.enumerateDevices();
                 componentRef.invokeMethodAsync("OnDeviceChange", newDevices);
             }
         }
@@ -118,6 +122,17 @@ namespace BlazorMedia {
         static async RemoveBlazorFPSListener(videoElement: BlazorMediaVideoElement) {
             if (videoElement.fpsIntervalId)
                 clearInterval(videoElement.fpsIntervalId);
+        }
+
+        static async CaptureImage(videoElement: BlazorMediaVideoElement)
+        {
+            let canvas = document.createElement("canvas") as HTMLCanvasElement;
+            let context = canvas.getContext("2d") as CanvasRenderingContext2D;
+            
+            canvas.width = videoElement.bmWidth;
+            canvas.height= videoElement.bmHeight;
+            context.drawImage(videoElement, 0, 0, videoElement.bmWidth, videoElement.bmHeight);
+            return canvas.toDataURL('image/png');
         }
     }
 }
