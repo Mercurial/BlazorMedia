@@ -11,8 +11,8 @@
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>0.3.0.2</Version>
-    <Authors>Rory Clark Manuelle Alesna</Authors>
+    <Version>0.3.0.3</Version>
+    <Authors>Rory Clark Manuelle Alesna, Nestor Angelo Tan</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://dev.azure.com/rawriclark/BlazorMedia</PackageProjectUrl>

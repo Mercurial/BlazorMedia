@@ -73,6 +73,8 @@ namespace BlazorMedia
         public string Style { get; set; } = string.Empty;
 
         protected bool IsInitialized { get; set; } = false;
+        
+        protected BlazorMediaAPI BlazorMediaAPI { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -83,7 +85,6 @@ namespace BlazorMedia
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected BlazorMediaAPI BlazorMediaAPI { get; set; }
 
         public async Task InitializeComponentAsync()
         {
