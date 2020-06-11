@@ -12,7 +12,7 @@ namespace BlazorMedia
     {
         public IJSRuntime JSRuntime { get; set; }
         public List<MediaDeviceInfo> CurrentMediaDevices { get; set; } = new List<MediaDeviceInfo>();
-        public event EventHandler<DeviceChangeEventArgs> OnDeviceChanged;
+        public event EventHandler<DeviceChangeEventArgs> DeviceChanged;
 
         public BlazorMediaAPI(IJSRuntime jsRuntime)
         {
@@ -68,7 +68,7 @@ namespace BlazorMedia
             var newDevices = JsonConvert.DeserializeObject<List<MediaDeviceInfo>>(newDevicesObject.ToString());
             var removedDevices = CurrentMediaDevices.Where(cmd => !newDevices.Any(nd => cmd.Name == nd.Name)).ToList();
             var addedDevices = newDevices.Where(nd => !CurrentMediaDevices.Any(cmd => cmd.Name == nd.Name)).ToList();
-            OnDeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
+            DeviceChanged?.Invoke(this, new DeviceChangeEventArgs()
             {
                 Devices = newDevices,
                 RemovedDevices = removedDevices,

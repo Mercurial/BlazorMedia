@@ -180,9 +180,11 @@ var BlazorMedia;
                     videoElement.lastFPS = 0;
                     // FPS Counter
                     videoElement.fpsIntervalId = setInterval(function () {
-                        var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
-                        videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
-                        componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                        if (videoElement) {
+                            var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                            videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                            componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                        }
                     }, 1000);
                     return [2 /*return*/];
                 });
@@ -191,7 +193,7 @@ var BlazorMedia;
         BlazorMediaInterop.RemoveBlazorFPSListener = function (videoElement) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    if (videoElement.fpsIntervalId)
+                    if (videoElement && videoElement.fpsIntervalId)
                         clearInterval(videoElement.fpsIntervalId);
                     return [2 /*return*/];
                 });

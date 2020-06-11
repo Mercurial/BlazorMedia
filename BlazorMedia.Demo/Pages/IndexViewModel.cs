@@ -42,7 +42,7 @@ namespace BlazorMedia.Demo
                 // Should call this before listening to device changes.
                 await BlazorMediaAPI.StartDeviceChangeListenerAsync();
                 await FetchDeviceListAsync();
-                BlazorMediaAPI.OnDeviceChanged += BlazorMedia_DeviceChanged;
+                BlazorMediaAPI.DeviceChanged += BlazorMedia_DeviceChanged;
             }
             await base.OnAfterRenderAsync(firstRender);
             await InvokeAsync(StateHasChanged);
@@ -148,7 +148,7 @@ namespace BlazorMedia.Demo
 
         public void Dispose()
         {
-            BlazorMediaAPI.OnDeviceChanged -= BlazorMedia_DeviceChanged;
+            BlazorMediaAPI.DeviceChanged -= BlazorMedia_DeviceChanged;
         }
     }
 
