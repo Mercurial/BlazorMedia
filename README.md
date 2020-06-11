@@ -7,6 +7,8 @@ A Blazor Library for Interacting with [Browser Media Streaming APIs](https://dev
 
 This Library allows you to record your browsers Camera / Screen Sharing Data and save it to a file or live stream it to a remote server.
 
+![Architecture](https://raw.githubusercontent.com/Mercurial/BlazorMedia/master/docs/blazormedia.png)
+
 # How to use
 
 Command Line
