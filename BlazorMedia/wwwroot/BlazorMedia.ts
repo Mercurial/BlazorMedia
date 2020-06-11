@@ -116,14 +116,16 @@ namespace BlazorMedia {
             videoElement.lastFPS = 0;
             // FPS Counter
             videoElement.fpsIntervalId = setInterval(() => {
-                let frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
-                videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
-                componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                if (videoElement) {
+                    let frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                    videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                    componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                }
             }, 1000);
         }
 
         static async RemoveBlazorFPSListener(videoElement: BlazorMediaVideoElement) {
-            if (videoElement.fpsIntervalId)
+            if (videoElement && videoElement.fpsIntervalId)
                 clearInterval(videoElement.fpsIntervalId);
         }
 
