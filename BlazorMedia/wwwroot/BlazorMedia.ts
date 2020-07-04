@@ -1,9 +1,11 @@
-// This file is to show how a library package may provide JavaScript interop features
-// wrapped in a .NET API
-
 interface BlazorMediaVideoElement extends HTMLVideoElement {
     mediaRecorder: MediaRecorder;
     mediaStream: MediaStream;
+    fpsIntervalId: number;
+    lastFPSTime: number;
+    lastFPS: number;
+    bmWidth: number;
+    bmHeight: number;
 }
 namespace BlazorMedia {
     export class BlazorMediaInterop {
@@ -20,14 +22,18 @@ namespace BlazorMedia {
                 height: {
                     ideal: 480
                 },
+                frameRate: {
+                    ideal: 60
+                },
                 deviceId: ""
             },
 
         }
 
 
-        static async Initialize(width: number = 640, height: number = 480, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
-
+        static async Initialize(width: number = 640, height: number = 480, frameRate = 60, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
+            videoElement.bmWidth = width;
+            videoElement.bmHeight = height;
             BlazorMediaInterop.constraints = {
                 audio: {
                     deviceId: microphoneDeviceId,
@@ -39,6 +45,9 @@ namespace BlazorMedia {
                     height: {
                         ideal: height
                     },
+                    frameRate: {
+                        ideal: frameRate
+                    },
                     deviceId: cameraDeviceId,
                 }
             };
@@ -47,7 +56,7 @@ namespace BlazorMedia {
                 BlazorMediaInterop.constraints.audio = false as any;
             }
 
-            BlazorMediaInterop.Uninitialize(videoElement);
+            BlazorMediaInterop.Destroy(videoElement);
 
             try {
                 videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
@@ -61,20 +70,22 @@ namespace BlazorMedia {
                 };
 
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
-                    var mediaError = { Type: 1, Message: "" }
+                    let mediaError = { Type: 1, Message: "" }
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                 };
-
+                videoElement.mediaRecorder.onstart = () => {
+                    componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
+                };
                 videoElement.mediaRecorder.start(timeslice);
             }
             catch (exception) {
-                var mediaError = { Type: 0, Message: exception.message }
+                let mediaError = { Type: 0, Message: exception.message }
                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
-                
+
             }
         }
 
-        static async Uninitialize(videoElement: BlazorMediaVideoElement) {
+        static async Destroy(videoElement: BlazorMediaVideoElement) {
             if (videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
@@ -84,26 +95,49 @@ namespace BlazorMedia {
                     stream.removeTrack(track);
                 }
             }
+            if (videoElement && videoElement.mediaRecorder) {
+                videoElement.mediaRecorder.stop();
+            }
+            BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
         }
 
-        static async DeviceChange(componentRef: any) {
+        static async StartBlazorDeviceListener(componentRef: any) {
             navigator.mediaDevices.ondevicechange = async (e) => {
-                var newDevices = await navigator.mediaDevices.enumerateDevices();
+                let newDevices = await navigator.mediaDevices.enumerateDevices();
                 componentRef.invokeMethodAsync("OnDeviceChange", newDevices);
             }
         }
 
-        static async DisposeVideoElement(videoElement: BlazorMediaVideoElement) {
-            if (videoElement && videoElement.mediaRecorder) {
-                videoElement.mediaRecorder.stop();
-            }
+        static async StopBlazorDeviceListener(componentRef: any) {
+            navigator.mediaDevices.ondevicechange = null;
         }
 
-        static async SetVideoRecorderTimeslice(videoElement: BlazorMediaVideoElement, timeslice: number = 0) {
-            if (videoElement && videoElement.mediaRecorder) {
-                videoElement.mediaRecorder.stop();
-                videoElement.mediaRecorder.start(timeslice);
-            }
+        static async AddBlazorFPSListener(videoElement: BlazorMediaVideoElement, componentRef: any) {
+            videoElement.lastFPS = 0;
+            // FPS Counter
+            videoElement.fpsIntervalId = setInterval(() => {
+                if (videoElement) {
+                    let frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                    videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                    componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                }
+            }, 1000);
+        }
+
+        static async RemoveBlazorFPSListener(videoElement: BlazorMediaVideoElement) {
+            if (videoElement && videoElement.fpsIntervalId)
+                clearInterval(videoElement.fpsIntervalId);
+        }
+
+        static async CaptureImage(videoElement: BlazorMediaVideoElement)
+        {
+            let canvas = document.createElement("canvas") as HTMLCanvasElement;
+            let context = canvas.getContext("2d") as CanvasRenderingContext2D;
+            
+            canvas.width = videoElement.bmWidth;
+            canvas.height= videoElement.bmHeight;
+            context.drawImage(videoElement, 0, 0, videoElement.bmWidth, videoElement.bmHeight);
+            return canvas.toDataURL('image/png');
         }
     }
 }

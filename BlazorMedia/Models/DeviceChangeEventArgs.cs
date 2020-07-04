@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlazorMedia.Model
+namespace BlazorMedia.Models
 {
     public class DeviceChangeEventArgs : EventArgs
     {

@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
-namespace BlazorMedia.Model
+namespace BlazorMedia.Models
 {
     public enum MediaDeviceKind
     {
