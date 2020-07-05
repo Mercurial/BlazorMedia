@@ -215,14 +215,14 @@ var BlazorMedia;
         };
         BlazorMediaInterop.DetectMediaDeviceUsedDisconnection = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
-                var stream, tracks, x, track;
+                var stream_1, tracks, _loop_1, x;
                 var _this = this;
                 return __generator(this, function (_a) {
                     if (videoElement.mediaStream) {
-                        stream = videoElement.mediaStream;
-                        tracks = stream.getTracks();
-                        for (x = 0; x < tracks.length; x++) {
-                            track = tracks[x];
+                        stream_1 = videoElement.mediaStream;
+                        tracks = stream_1.getTracks();
+                        _loop_1 = function (x) {
+                            var track = tracks[x];
                             track.onended = function (ev) { return __awaiter(_this, void 0, void 0, function () {
                                 var devices, videoIsStillConnected, audioIsStillConnected, y, device, mediaError;
                                 return __generator(this, function (_a) {
@@ -249,10 +249,14 @@ var BlazorMedia;
                                             if (!audioIsStillConnected || !videoIsStillConnected) {
                                                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
                                             }
+                                            stream_1.removeTrack(track);
                                             return [2 /*return*/];
                                     }
                                 });
                             }); };
+                        };
+                        for (x = 0; x < tracks.length; x++) {
+                            _loop_1(x);
                         }
                     }
                     return [2 /*return*/];

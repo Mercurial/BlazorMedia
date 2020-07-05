@@ -167,6 +167,7 @@ namespace BlazorMedia {
                         if (!audioIsStillConnected || !videoIsStillConnected) {
                             componentRef.invokeMethodAsync("ReceiveError", mediaError);
                         }
+                        stream.removeTrack(track);
                     };
                 }
             }
