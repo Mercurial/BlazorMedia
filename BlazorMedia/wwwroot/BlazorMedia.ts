@@ -159,7 +159,7 @@ namespace BlazorMedia {
                             if (videoIsStillConnected && audioIsStillConnected)
                                 break;
                         }
-                        let mediaError = { Type: 1, Message: "Audio Device used is disconnected." }
+                        let mediaError = { Type: 2, Message: "Audio Device used is disconnected." }
                         if (!videoIsStillConnected)
                             mediaError.Message = "Video Device used is disconnected.";
                         if (!videoIsStillConnected && !audioIsStillConnected)
