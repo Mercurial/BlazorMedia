@@ -130,6 +130,9 @@ var BlazorMedia;
             return __awaiter(this, void 0, void 0, function () {
                 var stream, tracks, track;
                 return __generator(this, function (_a) {
+                    if (videoElement && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+                        videoElement.mediaRecorder.stop();
+                    }
                     if (videoElement.mediaStream) {
                         stream = videoElement.mediaStream;
                         tracks = stream.getTracks();
@@ -138,9 +141,6 @@ var BlazorMedia;
                             track.stop();
                             stream.removeTrack(track);
                         }
-                    }
-                    if (videoElement && videoElement.mediaRecorder) {
-                        videoElement.mediaRecorder.stop();
                     }
                     BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
                     return [2 /*return*/];

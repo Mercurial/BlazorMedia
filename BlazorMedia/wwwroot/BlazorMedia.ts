@@ -87,6 +87,9 @@ namespace BlazorMedia {
         }
 
         static async Destroy(videoElement: BlazorMediaVideoElement) {
+            if (videoElement && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+                videoElement.mediaRecorder.stop();
+            }
             if (videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
@@ -95,9 +98,6 @@ namespace BlazorMedia {
                     track.stop();
                     stream.removeTrack(track);
                 }
-            }
-            if (videoElement && videoElement.mediaRecorder) {
-                videoElement.mediaRecorder.stop();
             }
             BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
         }

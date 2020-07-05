@@ -62,7 +62,7 @@
         "affectsGlobalScope": true
       },
       "./wwwroot/blazormedia.ts": {
-        "version": "639a7272a3e21cb67a0ae65205e841880379caf51c2ed791567ea261f53d3735",
+        "version": "6f0fd4a5543655599c769ee91a332e45003dd32a9260db8126e8bcd09c4181f0",
         "signature": "001318548ae20677fa1c2828829317cca3c513cd14b1b1f50b4f8a0fdd0aea2e",
         "affectsGlobalScope": true
       },
