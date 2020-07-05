@@ -114,6 +114,7 @@ var BlazorMedia;
                                 componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
                             };
                             videoElement.mediaRecorder.start(timeslice);
+                            BlazorMediaInterop.DetectMediaDeviceUsedDisconnection(videoElement, componentRef);
                             return [3 /*break*/, 4];
                         case 3:
                             exception_1 = _b.sent();
@@ -129,6 +130,9 @@ var BlazorMedia;
             return __awaiter(this, void 0, void 0, function () {
                 var stream, tracks, track;
                 return __generator(this, function (_a) {
+                    if (videoElement && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+                        videoElement.mediaRecorder.stop();
+                    }
                     if (videoElement.mediaStream) {
                         stream = videoElement.mediaStream;
                         tracks = stream.getTracks();
@@ -137,9 +141,6 @@ var BlazorMedia;
                             track.stop();
                             stream.removeTrack(track);
                         }
-                    }
-                    if (videoElement && videoElement.mediaRecorder) {
-                        videoElement.mediaRecorder.stop();
                     }
                     BlazorMediaInterop.RemoveBlazorFPSListener(videoElement);
                     return [2 /*return*/];
@@ -209,6 +210,56 @@ var BlazorMedia;
                     canvas.height = videoElement.bmHeight;
                     context.drawImage(videoElement, 0, 0, videoElement.bmWidth, videoElement.bmHeight);
                     return [2 /*return*/, canvas.toDataURL('image/png')];
+                });
+            });
+        };
+        BlazorMediaInterop.DetectMediaDeviceUsedDisconnection = function (videoElement, componentRef) {
+            return __awaiter(this, void 0, void 0, function () {
+                var stream_1, tracks, _loop_1, x;
+                var _this = this;
+                return __generator(this, function (_a) {
+                    if (videoElement.mediaStream) {
+                        stream_1 = videoElement.mediaStream;
+                        tracks = stream_1.getTracks();
+                        _loop_1 = function (x) {
+                            var track = tracks[x];
+                            track.onended = function (ev) { return __awaiter(_this, void 0, void 0, function () {
+                                var devices, videoIsStillConnected, audioIsStillConnected, y, device, mediaError;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                                        case 1:
+                                            devices = _a.sent();
+                                            videoIsStillConnected = false;
+                                            audioIsStillConnected = false;
+                                            for (y = 0; y < devices.length; y++) {
+                                                device = devices[y];
+                                                if (device.deviceId == this.constraints.video.deviceId)
+                                                    videoIsStillConnected = true;
+                                                if (device.deviceId == this.constraints.audio.deviceId)
+                                                    audioIsStillConnected = true;
+                                                if (videoIsStillConnected && audioIsStillConnected)
+                                                    break;
+                                            }
+                                            mediaError = { Type: 2, Message: "Audio Device used is disconnected." };
+                                            if (!videoIsStillConnected)
+                                                mediaError.Message = "Video Device used is disconnected.";
+                                            if (!videoIsStillConnected && !audioIsStillConnected)
+                                                mediaError.Message = "Audio and Video Device used is disconnected.";
+                                            if (!audioIsStillConnected || !videoIsStillConnected) {
+                                                componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                                            }
+                                            stream_1.removeTrack(track);
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); };
+                        };
+                        for (x = 0; x < tracks.length; x++) {
+                            _loop_1(x);
+                        }
+                    }
+                    return [2 /*return*/];
                 });
             });
         };

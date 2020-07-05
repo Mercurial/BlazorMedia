@@ -8,20 +8,24 @@
     FPS: @FPS, KBps: @KBps
 </div>
 <div style="display: flex; flex-direction: row; width: calc(100vw - 280px);">
-    <VideoMedia 
-        @ref="VideoMediaComponent"
-        Style="flex-basis: 50%; width: 50%;"
-        OnData="OnData"
-        OnError="OnError"
-        OnFPS="OnFPS"
-        OnStart="OnStart"
-        Timeslice="33"
-        Width="@Width"
-        Height="@Height"
-        RecordAudio="true"
-        CameraDeviceId="@SelectedCamera"
-        MicrophoneDeviceId="@SelectedMicrophone"
-        Framerate="@Framerate" />
+    @* Wait for Selected device to be set *@
+    @if(SelectedCamera.Length > 0 && SelectedMicrophone.Length > 0) 
+    {
+        <VideoMedia 
+            @ref="VideoMediaComponent"
+            Style="flex-basis: 50%; width: 50%;"
+            OnData="OnData"
+            OnError="OnError"
+            OnFPS="OnFPS"
+            OnStart="OnStart"
+            Timeslice="33"
+            Width="@Width"
+            Height="@Height"
+            RecordAudio="true"
+            CameraDeviceId="@SelectedCamera"
+            MicrophoneDeviceId="@SelectedMicrophone"
+            Framerate="@Framerate" />
+    }
     <img src="@PictureData" style="flex-basis: 50%; width: 50%;" />
 </div>
 <div>
