@@ -144,33 +144,47 @@ namespace BlazorMedia {
             if (videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
-                for (let x = 0; x < tracks.length; x++) {
-                    const track = tracks[x];
+                tracks.forEach((track: MediaStreamTrack) => {
                     track.onended = async (ev: Event) => {
-                        let devices = await navigator.mediaDevices.enumerateDevices();
-                        var videoIsStillConnected = false;
-                        var audioIsStillConnected = false;
-                        for (let y = 0; y < devices.length; y++) {
-                            const device = devices[y];
-                            if (device.deviceId == this.constraints.video.deviceId)
-                                videoIsStillConnected = true;
-                            if (device.deviceId == this.constraints.audio.deviceId)
-                                audioIsStillConnected = true;
-                            if (videoIsStillConnected && audioIsStillConnected)
-                                break;
-                        }
-                        let mediaError = { Type: 2, Message: "Audio Device used is disconnected." }
-                        if (!videoIsStillConnected)
-                            mediaError.Message = "Video Device used is disconnected.";
-                        if (!videoIsStillConnected && !audioIsStillConnected)
-                            mediaError.Message = "Audio and Video Device used is disconnected.";
-                        if (!audioIsStillConnected || !videoIsStillConnected) {
-                            componentRef.invokeMethodAsync("ReceiveError", mediaError);
-                        }
-                        stream.removeTrack(track);
+                        setTimeout(function () {
+                            BlazorMediaInterop.HandleDeviceDisconnection(videoElement, componentRef);
+                        }, 500);
                     };
+                });
+            }
+        }
+
+        static async HandleDeviceDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
+
+            if (videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+                let devices = await navigator.mediaDevices.enumerateDevices();
+                var videoIsStillConnected = false;
+                var audioIsStillConnected = false;
+
+                for (let y = 0; y < devices.length; y++) {
+                    const device = devices[y];
+                    if (device.deviceId == this.constraints.video.deviceId)
+                        videoIsStillConnected = true;
+                    if (device.deviceId == this.constraints.audio.deviceId)
+                        audioIsStillConnected = true;
+                    if (videoIsStillConnected && audioIsStillConnected)
+                        break;
+                }
+
+                if (!audioIsStillConnected || !videoIsStillConnected) {
+                    let mediaError = { Type: 2, Message: "Audio Device used is disconnected." }
+                    if (!videoIsStillConnected)
+                        mediaError.Message = "Video Device used is disconnected.";
+                    if (!videoIsStillConnected && !audioIsStillConnected)
+                        mediaError.Message = "Audio and Video Device used is disconnected.";
+                    componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                }
+
+                if (videoElement.mediaStream) {
+                    BlazorMediaInterop.Destroy(videoElement);
                 }
             }
         }
+
     }
 }
