@@ -178,15 +178,17 @@ var BlazorMedia;
         BlazorMediaInterop.AddBlazorFPSListener = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    videoElement.lastFPS = 0;
-                    // FPS Counter
-                    videoElement.fpsIntervalId = setInterval(function () {
-                        if (videoElement) {
-                            var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
-                            videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
-                            componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
-                        }
-                    }, 1000);
+                    if (videoElement) {
+                        videoElement.lastFPS = 0;
+                        // FPS Counter
+                        videoElement.fpsIntervalId = setInterval(function () {
+                            if (videoElement) {
+                                var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                                videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                                componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                            }
+                        }, 1000);
+                    }
                     return [2 /*return*/];
                 });
             });
