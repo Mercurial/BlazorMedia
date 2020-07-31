@@ -178,15 +178,17 @@ var BlazorMedia;
         BlazorMediaInterop.AddBlazorFPSListener = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    videoElement.lastFPS = 0;
-                    // FPS Counter
-                    videoElement.fpsIntervalId = setInterval(function () {
-                        if (videoElement) {
-                            var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
-                            videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
-                            componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
-                        }
-                    }, 1000);
+                    if (videoElement) {
+                        videoElement.lastFPS = 0;
+                        // FPS Counter
+                        videoElement.fpsIntervalId = setInterval(function () {
+                            if (videoElement) {
+                                var frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                                videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                                componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                            }
+                        }, 1000);
+                    }
                     return [2 /*return*/];
                 });
             });
@@ -238,11 +240,10 @@ var BlazorMedia;
         };
         BlazorMediaInterop.HandleDeviceDisconnection = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
-                var tracks, devices, videoIsStillConnected, audioIsStillConnected, y, device, mediaError;
+                var devices, videoIsStillConnected, audioIsStillConnected, y, device, mediaError;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            tracks = videoElement.mediaStream.getTracks();
                             if (!(videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive')) return [3 /*break*/, 2];
                             return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
                         case 1:

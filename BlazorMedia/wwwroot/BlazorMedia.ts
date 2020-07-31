@@ -114,15 +114,17 @@ namespace BlazorMedia {
         }
 
         static async AddBlazorFPSListener(videoElement: BlazorMediaVideoElement, componentRef: any) {
-            videoElement.lastFPS = 0;
-            // FPS Counter
-            videoElement.fpsIntervalId = setInterval(() => {
-                if (videoElement) {
-                    let frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
-                    videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
-                    componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
-                }
-            }, 1000);
+            if (videoElement) {
+                videoElement.lastFPS = 0;
+                // FPS Counter
+                videoElement.fpsIntervalId = setInterval(() => {
+                    if (videoElement) {
+                        let frameRate = videoElement.getVideoPlaybackQuality().totalVideoFrames - videoElement.lastFPS;
+                        videoElement.lastFPS = videoElement.getVideoPlaybackQuality().totalVideoFrames;
+                        componentRef.invokeMethodAsync("ReceiveFPS", frameRate);
+                    }
+                }, 1000);
+            }
         }
 
         static async RemoveBlazorFPSListener(videoElement: BlazorMediaVideoElement) {
