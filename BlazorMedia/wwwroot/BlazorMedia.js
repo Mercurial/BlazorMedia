@@ -54,11 +54,9 @@ var BlazorMedia;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
-                            videoElement.bmWidth = width;
-                            videoElement.bmHeight = height;
                             BlazorMediaInterop.constraints = {
                                 audio: {
-                                    deviceId: microphoneDeviceId,
+                                    deviceId: { exact: microphoneDeviceId },
                                 },
                                 video: {
                                     width: {
@@ -70,7 +68,7 @@ var BlazorMedia;
                                     frameRate: {
                                         ideal: frameRate
                                     },
-                                    deviceId: cameraDeviceId,
+                                    deviceId: { exact: cameraDeviceId },
                                 }
                             };
                             if (canCaptureAudio == false) {
@@ -80,6 +78,8 @@ var BlazorMedia;
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 3, , 4]);
+                            videoElement.bmWidth = width;
+                            videoElement.bmHeight = height;
                             _a = videoElement;
                             return [4 /*yield*/, navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints)];
                         case 2:
@@ -106,6 +106,7 @@ var BlazorMedia;
                                 var mediaError;
                                 return __generator(this, function (_a) {
                                     mediaError = { Type: 1, Message: "" };
+                                    console.log(e);
                                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                                     return [2 /*return*/];
                                 });
@@ -118,7 +119,24 @@ var BlazorMedia;
                             return [3 /*break*/, 4];
                         case 3:
                             exception_1 = _b.sent();
+                            console.log(exception_1);
+                            console.log(exception_1.name);
+                            console.log(exception_1.message);
                             mediaError = { Type: 0, Message: exception_1.message };
+                            switch (exception_1.name) {
+                                case "NotAllowedError":
+                                    mediaError.Type = 3;
+                                    break;
+                                case "NotReadableError":
+                                    mediaError.Type = 4;
+                                    break;
+                                case "OverconstrainedError":
+                                    mediaError.Type = 5;
+                                    mediaError.Message = "Media constraint for \"" + exception_1.constraint + "\" was not met.";
+                                    break;
+                                default:
+                                    break;
+                            }
                             componentRef.invokeMethodAsync("ReceiveError", mediaError);
                             return [3 /*break*/, 4];
                         case 4: return [2 /*return*/];
@@ -133,7 +151,7 @@ var BlazorMedia;
                     if (videoElement && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
                         videoElement.mediaRecorder.stop();
                     }
-                    if (videoElement.mediaStream) {
+                    if (videoElement && videoElement.mediaStream) {
                         stream = videoElement.mediaStream;
                         tracks = stream.getTracks();
                         track = void 0;
@@ -252,9 +270,9 @@ var BlazorMedia;
                             audioIsStillConnected = false;
                             for (y = 0; y < devices.length; y++) {
                                 device = devices[y];
-                                if (device.deviceId == this.constraints.video.deviceId)
+                                if (device.deviceId == this.constraints.video.deviceId.exact)
                                     videoIsStillConnected = true;
-                                if (device.deviceId == this.constraints.audio.deviceId)
+                                if (device.deviceId == this.constraints.audio.deviceId.exact)
                                     audioIsStillConnected = true;
                                 if (videoIsStillConnected && audioIsStillConnected)
                                     break;
@@ -279,7 +297,7 @@ var BlazorMedia;
         /// Defaults
         BlazorMediaInterop.constraints = {
             audio: {
-                deviceId: ""
+                deviceId: { exact: "" }
             },
             video: {
                 width: {
@@ -291,7 +309,7 @@ var BlazorMedia;
                 frameRate: {
                     ideal: 60
                 },
-                deviceId: ""
+                deviceId: { exact: "" }
             },
         };
         return BlazorMediaInterop;

@@ -62,8 +62,8 @@
         "affectsGlobalScope": true
       },
       "./wwwroot/blazormedia.ts": {
-        "version": "d667c85e81a2d6dc88bad6dbdd27f6af5377095cde79d6b1098f1e2f9c7fb712",
-        "signature": "b747948aaca5cafe9c2ae5fa00d7494c572247acfbe2ac066300c7cc9123bef9",
+        "version": "21efd8b3a5918b4c47c64fd2f0c22dff09c5543cf1078acbf31ca71e467cbde1",
+        "signature": "b547b9d15246f3bd076b2a8ad8bd229790bced51876304a9703248924bd33aff",
         "affectsGlobalScope": true
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
