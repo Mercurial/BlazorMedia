@@ -107,6 +107,7 @@ var BlazorMedia;
                                 return __generator(this, function (_a) {
                                     mediaError = { Type: 1, Message: "" };
                                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                                    BlazorMediaInterop.Destroy(videoElement);
                                     return [2 /*return*/];
                                 });
                             }); };
@@ -126,14 +127,18 @@ var BlazorMedia;
                                 case "NotReadableError":
                                     mediaError.Type = 4;
                                     break;
-                                case "OverconstrainedError":
+                                case "NotFoundError":
                                     mediaError.Type = 5;
+                                    break;
+                                case "OverconstrainedError":
+                                    mediaError.Type = 6;
                                     mediaError.Message = "Media constraint for \"" + exception_1.constraint + "\" was not met.";
                                     break;
                                 default:
                                     break;
                             }
                             componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                            BlazorMediaInterop.Destroy(videoElement);
                             return [3 /*break*/, 4];
                         case 4: return [2 /*return*/];
                     }

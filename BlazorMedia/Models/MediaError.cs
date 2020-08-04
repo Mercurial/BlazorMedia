@@ -9,6 +9,7 @@ namespace BlazorMedia.Models
 		MediaDevice,
 		NotAllowed,
 		NotReadable,
+		NotFound,
 		OverConstrained,
 	}
 

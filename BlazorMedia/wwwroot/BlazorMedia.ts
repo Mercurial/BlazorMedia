@@ -73,6 +73,7 @@ namespace BlazorMedia {
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
                     let mediaError = { Type: 1, Message: "" }
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                    BlazorMediaInterop.Destroy(videoElement);
                 };
 
                 videoElement.mediaRecorder.onstart = () => {
@@ -83,7 +84,6 @@ namespace BlazorMedia {
             }
             catch (exception) {
                 let mediaError = { Type: 0, Message: exception.message }
-
                 switch (exception.name) {
                     case "NotAllowedError":
                         mediaError.Type = 3;
@@ -91,14 +91,18 @@ namespace BlazorMedia {
                     case "NotReadableError":
                         mediaError.Type = 4;
                         break;
-                    case "OverconstrainedError":
+                    case "NotFoundError":
                         mediaError.Type = 5;
+                        break;
+                    case "OverconstrainedError":
+                        mediaError.Type = 6;
                         mediaError.Message = `Media constraint for "${exception.constraint}" was not met.`;
                         break;
                     default:
                         break;
                 }
                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                BlazorMediaInterop.Destroy(videoElement);
             }
         }
 
