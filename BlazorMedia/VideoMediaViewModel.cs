@@ -25,7 +25,7 @@ namespace BlazorMedia
 		public EventCallback<int> OnFPS { get; set; }
 
 		[Parameter]
-		public EventCallback<MediaStartEventArgs> OnStart { get; set; }
+		public EventCallback<MediaStartEventArgs> OnInitialize { get; set; }
 
 		private int _timeslice = 0;
 
@@ -123,8 +123,8 @@ namespace BlazorMedia
 		[JSInvokable]
 		public void ReceiveStart(int width, int height)
 		{
-			if (OnStart.HasDelegate)
-				OnStart.InvokeAsync(new MediaStartEventArgs { Width = width, Height = height });
+			if (OnInitialize.HasDelegate)
+				OnInitialize.InvokeAsync(new MediaStartEventArgs { Width = width, Height = height });
 		}
 
 		public async Task ReloadAsync()
@@ -149,10 +149,10 @@ namespace BlazorMedia
 				{
 					await BlazorMediaAPI.Destroy(VideoElementRef);
 				}
-				catch (Exception e)
+				catch (Exception exception)
 				{
 					// Exception occurs when a task is cancelled
-					Console.WriteLine(e);
+					Console.WriteLine($"Error in VideoMedia Dispose: {exception}");
 				}
 			}
 		}

@@ -106,7 +106,6 @@ var BlazorMedia;
                                 var mediaError;
                                 return __generator(this, function (_a) {
                                     mediaError = { Type: 1, Message: "" };
-                                    console.log(e);
                                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                                     return [2 /*return*/];
                                 });
@@ -119,9 +118,6 @@ var BlazorMedia;
                             return [3 /*break*/, 4];
                         case 3:
                             exception_1 = _b.sent();
-                            console.log(exception_1);
-                            console.log(exception_1.name);
-                            console.log(exception_1.message);
                             mediaError = { Type: 0, Message: exception_1.message };
                             switch (exception_1.name) {
                                 case "NotAllowedError":
@@ -238,7 +234,7 @@ var BlazorMedia;
                 var stream, tracks;
                 var _this = this;
                 return __generator(this, function (_a) {
-                    if (videoElement.mediaStream) {
+                    if (videoElement && videoElement.mediaStream) {
                         stream = videoElement.mediaStream;
                         tracks = stream.getTracks();
                         tracks.forEach(function (track) {
@@ -262,7 +258,7 @@ var BlazorMedia;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive')) return [3 /*break*/, 2];
+                            if (!(videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive')) return [3 /*break*/, 2];
                             return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
                         case 1:
                             devices = _a.sent();
