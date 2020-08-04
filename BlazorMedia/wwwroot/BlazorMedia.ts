@@ -72,9 +72,9 @@ namespace BlazorMedia {
 
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
                     let mediaError = { Type: 1, Message: "" }
-                    console.log(e);
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                 };
+
                 videoElement.mediaRecorder.onstart = () => {
                     componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
                 };
@@ -82,9 +82,6 @@ namespace BlazorMedia {
                 BlazorMediaInterop.DetectMediaDeviceUsedDisconnection(videoElement, componentRef);
             }
             catch (exception) {
-                console.log(exception);
-                console.log(exception.name);
-                console.log(exception.message);
                 let mediaError = { Type: 0, Message: exception.message }
 
                 switch (exception.name) {
@@ -162,7 +159,7 @@ namespace BlazorMedia {
         }
 
         static async DetectMediaDeviceUsedDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
-            if (videoElement.mediaStream) {
+            if (videoElement && videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
                 tracks.forEach((track: MediaStreamTrack) => {
@@ -177,7 +174,7 @@ namespace BlazorMedia {
 
         static async HandleDeviceDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
 
-            if (videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+            if (videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
                 let devices = await navigator.mediaDevices.enumerateDevices();
                 var videoIsStillConnected = false;
                 var audioIsStillConnected = false;
