@@ -70,7 +70,7 @@ namespace BlazorMedia.Demo
 			await InvokeAsync(StateHasChanged);
 		}
 
-		protected async void OnStart(MediaStartEventArgs e)
+		protected async void OnInitialize(MediaStartEventArgs e)
 		{
 			EffectiveWidth = e.Width;
 			EffectiveHeight = e.Height;

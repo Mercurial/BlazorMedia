@@ -6,7 +6,11 @@ namespace BlazorMedia.Models
 	{
 		Initialization,
 		Runtime,
-		MediaDevice
+		MediaDevice,
+		NotAllowed,
+		NotReadable,
+		NotFound,
+		OverConstrained,
 	}
 
 	public class MediaError

@@ -13,7 +13,7 @@ namespace BlazorMedia {
         /// Defaults
         private static constraints = {
             audio: {
-                deviceId: ""
+                deviceId: { exact: "" }
             },
             video: {
                 width: {
@@ -25,18 +25,17 @@ namespace BlazorMedia {
                 frameRate: {
                     ideal: 60
                 },
-                deviceId: ""
+                deviceId: { exact: "" }
             },
 
         }
 
 
         static async Initialize(width: number = 640, height: number = 480, frameRate = 60, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
-            videoElement.bmWidth = width;
-            videoElement.bmHeight = height;
+            
             BlazorMediaInterop.constraints = {
                 audio: {
-                    deviceId: microphoneDeviceId,
+                    deviceId: { exact: microphoneDeviceId },
                 },
                 video: {
                     width: {
@@ -48,7 +47,7 @@ namespace BlazorMedia {
                     frameRate: {
                         ideal: frameRate
                     },
-                    deviceId: cameraDeviceId,
+                    deviceId: { exact: cameraDeviceId },
                 }
             };
 
@@ -59,6 +58,8 @@ namespace BlazorMedia {
             BlazorMediaInterop.Destroy(videoElement);
 
             try {
+                videoElement.bmWidth = width;
+                videoElement.bmHeight = height;
                 videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
                 videoElement.srcObject = videoElement.mediaStream;
                 videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
@@ -72,7 +73,9 @@ namespace BlazorMedia {
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
                     let mediaError = { Type: 1, Message: "" }
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
+                    BlazorMediaInterop.Destroy(videoElement);
                 };
+
                 videoElement.mediaRecorder.onstart = () => {
                     componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
                 };
@@ -81,8 +84,25 @@ namespace BlazorMedia {
             }
             catch (exception) {
                 let mediaError = { Type: 0, Message: exception.message }
+                switch (exception.name) {
+                    case "NotAllowedError":
+                        mediaError.Type = 3;
+                        break;
+                    case "NotReadableError":
+                        mediaError.Type = 4;
+                        break;
+                    case "NotFoundError":
+                        mediaError.Type = 5;
+                        break;
+                    case "OverconstrainedError":
+                        mediaError.Type = 6;
+                        mediaError.Message = `Media constraint for "${exception.constraint}" was not met.`;
+                        break;
+                    default:
+                        break;
+                }
                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
-
+                BlazorMediaInterop.Destroy(videoElement);
             }
         }
 
@@ -90,7 +110,7 @@ namespace BlazorMedia {
             if (videoElement && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
                 videoElement.mediaRecorder.stop();
             }
-            if (videoElement.mediaStream) {
+            if (videoElement && videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
                 let track: MediaStreamTrack | undefined;
@@ -143,7 +163,7 @@ namespace BlazorMedia {
         }
 
         static async DetectMediaDeviceUsedDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
-            if (videoElement.mediaStream) {
+            if (videoElement && videoElement.mediaStream) {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
                 tracks.forEach((track: MediaStreamTrack) => {
@@ -158,16 +178,16 @@ namespace BlazorMedia {
 
         static async HandleDeviceDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
 
-            if (videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
+            if (videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
                 let devices = await navigator.mediaDevices.enumerateDevices();
                 var videoIsStillConnected = false;
                 var audioIsStillConnected = false;
 
                 for (let y = 0; y < devices.length; y++) {
                     const device = devices[y];
-                    if (device.deviceId == this.constraints.video.deviceId)
+                    if (device.deviceId == this.constraints.video.deviceId.exact)
                         videoIsStillConnected = true;
-                    if (device.deviceId == this.constraints.audio.deviceId)
+                    if (device.deviceId == this.constraints.audio.deviceId.exact)
                         audioIsStillConnected = true;
                     if (videoIsStillConnected && audioIsStillConnected)
                         break;
