@@ -67,8 +67,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
-        "version": "7b4530b931e97299ed818b4a01daf8264787447e7bb01836e3195391e28b6da0",
-        "signature": "7b4530b931e97299ed818b4a01daf8264787447e7bb01836e3195391e28b6da0",
+        "version": "1f06174c977f600f96a41802f6058895427755fb14d1c1e20c01bd75c20b11e4",
+        "signature": "1f06174c977f600f96a41802f6058895427755fb14d1c1e20c01bd75c20b11e4",
         "affectsGlobalScope": true
       }
     },
@@ -104,5 +104,5 @@
       "./wwwroot/blazormedia.ts"
     ]
   },
-  "version": "3.9.5"
+  "version": "3.9.7"
 }
