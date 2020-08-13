@@ -56,7 +56,7 @@ var BlazorMedia;
                         case 0:
                             BlazorMediaInterop.constraints = {
                                 audio: {
-                                    deviceId: { exact: microphoneDeviceId },
+                                    deviceId: { exact: microphoneDeviceId }
                                 },
                                 video: {
                                     width: {
@@ -71,7 +71,7 @@ var BlazorMedia;
                                     deviceId: { exact: cameraDeviceId },
                                 }
                             };
-                            if (canCaptureAudio == false) {
+                            if (canCaptureAudio == false || microphoneDeviceId.length == 0) {
                                 BlazorMediaInterop.constraints.audio = false;
                             }
                             BlazorMediaInterop.Destroy(videoElement);
@@ -264,7 +264,7 @@ var BlazorMedia;
                     switch (_a.label) {
                         case 0:
                             if (!(videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive')) return [3 /*break*/, 2];
-                            return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                            return [4 /*yield*/, this.GetInputMediaDevices()];
                         case 1:
                             devices = _a.sent();
                             videoIsStillConnected = false;
@@ -291,6 +291,25 @@ var BlazorMedia;
                             }
                             _a.label = 2;
                         case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        BlazorMediaInterop.GetInputMediaDevices = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var devices, inputDevices, i;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                        case 1:
+                            devices = _a.sent();
+                            inputDevices = [];
+                            for (i = 0; i < devices.length; i++) {
+                                if (devices[i].kind == "audioinput" || devices[i].kind == "videoinput") {
+                                    inputDevices.push(devices[i]);
+                                }
+                            }
+                            return [2 /*return*/, inputDevices];
                     }
                 });
             });

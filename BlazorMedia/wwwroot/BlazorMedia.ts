@@ -35,7 +35,7 @@ namespace BlazorMedia {
             
             BlazorMediaInterop.constraints = {
                 audio: {
-                    deviceId: { exact: microphoneDeviceId },
+                    deviceId: { exact: microphoneDeviceId }
                 },
                 video: {
                     width: {
@@ -51,7 +51,7 @@ namespace BlazorMedia {
                 }
             };
 
-            if (canCaptureAudio == false) {
+            if (canCaptureAudio == false || microphoneDeviceId.length == 0) {
                 BlazorMediaInterop.constraints.audio = false as any;
             }
 
@@ -179,9 +179,9 @@ namespace BlazorMedia {
         static async HandleDeviceDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
 
             if (videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
-                let devices = await navigator.mediaDevices.enumerateDevices();
-                var videoIsStillConnected = false;
-                var audioIsStillConnected = false;
+                let devices = await this.GetInputMediaDevices();
+                let videoIsStillConnected = false;
+                let audioIsStillConnected = false;
 
                 for (let y = 0; y < devices.length; y++) {
                     const device = devices[y];
@@ -206,6 +206,20 @@ namespace BlazorMedia {
                     BlazorMediaInterop.Destroy(videoElement);
                 }
             }
+        }
+
+        static async GetInputMediaDevices()
+        {
+            let devices = await navigator.mediaDevices.enumerateDevices();
+            let inputDevices = [];
+            for(let i=0; i < devices.length; i++)
+            {
+                if(devices[i].kind == "audioinput" || devices[i].kind == "videoinput")
+                {
+                    inputDevices.push(devices[i]);
+                }
+            }
+            return inputDevices;
         }
 
     }
