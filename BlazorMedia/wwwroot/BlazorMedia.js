@@ -56,7 +56,7 @@ var BlazorMedia;
                         case 0:
                             BlazorMediaInterop.constraints = {
                                 audio: {
-                                    deviceId: { exact: microphoneDeviceId },
+                                    deviceId: { exact: microphoneDeviceId }
                                 },
                                 video: {
                                     width: {
@@ -71,7 +71,7 @@ var BlazorMedia;
                                     deviceId: { exact: cameraDeviceId },
                                 }
                             };
-                            if (canCaptureAudio == false) {
+                            if (canCaptureAudio == false || microphoneDeviceId.length == 0) {
                                 BlazorMediaInterop.constraints.audio = false;
                             }
                             BlazorMediaInterop.Destroy(videoElement);
@@ -237,52 +237,50 @@ var BlazorMedia;
         BlazorMediaInterop.DetectMediaDeviceUsedDisconnection = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
                 var stream, tracks;
-                var _this = this;
                 return __generator(this, function (_a) {
                     if (videoElement && videoElement.mediaStream) {
                         stream = videoElement.mediaStream;
                         tracks = stream.getTracks();
                         tracks.forEach(function (track) {
-                            track.onended = function (ev) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    setTimeout(function () {
-                                        BlazorMediaInterop.HandleDeviceDisconnection(videoElement, componentRef);
-                                    }, 500);
-                                    return [2 /*return*/];
-                                });
-                            }); };
+                            track.onended = function () { return setTimeout(function () { return BlazorMediaInterop.HandleTrackEnd(videoElement, componentRef); }, 500); };
                         });
                     }
                     return [2 /*return*/];
                 });
             });
         };
-        BlazorMediaInterop.HandleDeviceDisconnection = function (videoElement, componentRef) {
+        BlazorMediaInterop.HandleTrackEnd = function (videoElement, componentRef) {
             return __awaiter(this, void 0, void 0, function () {
-                var devices, videoIsStillConnected, audioIsStillConnected, y, device, mediaError;
+                var devices, videoIsStillConnected, audioIsStillConnected, videoConstraints, audioConstraints, y, device, mediaError;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (!(videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive')) return [3 /*break*/, 2];
-                            return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                            return [4 /*yield*/, this.GetInputMediaDevices()];
                         case 1:
                             devices = _a.sent();
                             videoIsStillConnected = false;
                             audioIsStillConnected = false;
-                            for (y = 0; y < devices.length; y++) {
-                                device = devices[y];
-                                if (device.deviceId == this.constraints.video.deviceId.exact)
-                                    videoIsStillConnected = true;
-                                if (device.deviceId == this.constraints.audio.deviceId.exact)
-                                    audioIsStillConnected = true;
-                                if (videoIsStillConnected && audioIsStillConnected)
-                                    break;
+                            if (this.constraints.video && this.constraints.audio) {
+                                videoConstraints = this.constraints.video;
+                                audioConstraints = this.constraints.audio;
+                                for (y = 0; y < devices.length; y++) {
+                                    device = devices[y];
+                                    if (device.deviceId == videoConstraints.deviceId.exact)
+                                        videoIsStillConnected = true;
+                                    if (device.deviceId == audioConstraints.deviceId.exact)
+                                        audioIsStillConnected = true;
+                                    if (videoIsStillConnected && audioIsStillConnected)
+                                        break;
+                                }
                             }
                             if (!audioIsStillConnected || !videoIsStillConnected) {
-                                mediaError = { Type: 2, Message: "Audio Device used is disconnected." };
-                                if (!videoIsStillConnected)
+                                mediaError = { Type: 2, Message: "" };
+                                if (videoIsStillConnected)
+                                    mediaError.Message = "Audio Device used is disconnected.";
+                                else if (audioIsStillConnected)
                                     mediaError.Message = "Video Device used is disconnected.";
-                                if (!videoIsStillConnected && !audioIsStillConnected)
+                                else
                                     mediaError.Message = "Audio and Video Device used is disconnected.";
                                 componentRef.invokeMethodAsync("ReceiveError", mediaError);
                             }
@@ -291,6 +289,25 @@ var BlazorMedia;
                             }
                             _a.label = 2;
                         case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        BlazorMediaInterop.GetInputMediaDevices = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var devices, inputDevices, i;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, navigator.mediaDevices.enumerateDevices()];
+                        case 1:
+                            devices = _a.sent();
+                            inputDevices = [];
+                            for (i = 0; i < devices.length; i++) {
+                                if (devices[i].kind == "audioinput" || devices[i].kind == "videoinput") {
+                                    inputDevices.push(devices[i]);
+                                }
+                            }
+                            return [2 /*return*/, inputDevices];
                     }
                 });
             });

@@ -62,13 +62,13 @@
         "affectsGlobalScope": true
       },
       "./wwwroot/blazormedia.ts": {
-        "version": "91538477fcdc32d37d71bd01cb725881d7e9d7d1b2f2fda705e151870c59a27e",
-        "signature": "b547b9d15246f3bd076b2a8ad8bd229790bced51876304a9703248924bd33aff",
+        "version": "facf3e734f2f3ac81e93b04f7ee3571d008eaebac1ae48e9d4da330a11886adc",
+        "signature": "27840073bd96fb80a742a88c414437dd25fad235e6f53eea90d7ad7bf2de1b0d",
         "affectsGlobalScope": true
       },
       "./node_modules/@types/dom-mediacapture-record/index.d.ts": {
-        "version": "7b4530b931e97299ed818b4a01daf8264787447e7bb01836e3195391e28b6da0",
-        "signature": "7b4530b931e97299ed818b4a01daf8264787447e7bb01836e3195391e28b6da0",
+        "version": "1f06174c977f600f96a41802f6058895427755fb14d1c1e20c01bd75c20b11e4",
+        "signature": "1f06174c977f600f96a41802f6058895427755fb14d1c1e20c01bd75c20b11e4",
         "affectsGlobalScope": true
       }
     },
@@ -104,5 +104,5 @@
       "./wwwroot/blazormedia.ts"
     ]
   },
-  "version": "3.9.5"
+  "version": "3.9.7"
 }

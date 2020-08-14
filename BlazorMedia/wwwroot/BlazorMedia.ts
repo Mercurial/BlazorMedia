@@ -7,11 +7,12 @@ interface BlazorMediaVideoElement extends HTMLVideoElement {
     bmWidth: number;
     bmHeight: number;
 }
+
 namespace BlazorMedia {
     export class BlazorMediaInterop {
 
         /// Defaults
-        private static constraints = {
+        private static constraints: MediaStreamConstraints = {
             audio: {
                 deviceId: { exact: "" }
             },
@@ -32,10 +33,10 @@ namespace BlazorMedia {
 
 
         static async Initialize(width: number = 640, height: number = 480, frameRate = 60, canCaptureAudio: boolean = true, cameraDeviceId: string = "", microphoneDeviceId: string = "", timeslice: number = 0, videoElement: BlazorMediaVideoElement, componentRef: any) {
-            
+
             BlazorMediaInterop.constraints = {
                 audio: {
-                    deviceId: { exact: microphoneDeviceId },
+                    deviceId: { exact: microphoneDeviceId }
                 },
                 video: {
                     width: {
@@ -51,8 +52,8 @@ namespace BlazorMedia {
                 }
             };
 
-            if (canCaptureAudio == false) {
-                BlazorMediaInterop.constraints.audio = false as any;
+            if (canCaptureAudio == false || microphoneDeviceId.length == 0) {
+                BlazorMediaInterop.constraints.audio = false;
             }
 
             BlazorMediaInterop.Destroy(videoElement);
@@ -167,37 +168,40 @@ namespace BlazorMedia {
                 let stream = videoElement.mediaStream;
                 let tracks = stream.getTracks();
                 tracks.forEach((track: MediaStreamTrack) => {
-                    track.onended = async (ev: Event) => {
-                        setTimeout(function () {
-                            BlazorMediaInterop.HandleDeviceDisconnection(videoElement, componentRef);
-                        }, 500);
-                    };
+                    track.onended = () => setTimeout(() => BlazorMediaInterop.HandleTrackEnd(videoElement, componentRef), 500);
                 });
             }
         }
 
-        static async HandleDeviceDisconnection(videoElement: BlazorMediaVideoElement, componentRef: any) {
+        static async HandleTrackEnd(videoElement: BlazorMediaVideoElement, componentRef: any) {
 
             if (videoElement && videoElement.mediaStream && videoElement.mediaRecorder && videoElement.mediaRecorder.state != 'inactive') {
-                let devices = await navigator.mediaDevices.enumerateDevices();
-                var videoIsStillConnected = false;
-                var audioIsStillConnected = false;
+                let devices = await this.GetInputMediaDevices();
+                let videoIsStillConnected = false;
+                let audioIsStillConnected = false;
 
-                for (let y = 0; y < devices.length; y++) {
-                    const device = devices[y];
-                    if (device.deviceId == this.constraints.video.deviceId.exact)
-                        videoIsStillConnected = true;
-                    if (device.deviceId == this.constraints.audio.deviceId.exact)
-                        audioIsStillConnected = true;
-                    if (videoIsStillConnected && audioIsStillConnected)
-                        break;
+                if (this.constraints.video && this.constraints.audio) {
+                    let videoConstraints = this.constraints.video as MediaTrackConstraints;
+                    let audioConstraints = this.constraints.audio as MediaTrackConstraints;
+                    for (let y = 0; y < devices.length; y++) {
+                        const device = devices[y];
+                        if (device.deviceId == (videoConstraints.deviceId as ConstrainDOMStringParameters).exact)
+                            videoIsStillConnected = true;
+                        if (device.deviceId == (audioConstraints.deviceId as ConstrainDOMStringParameters).exact)
+                            audioIsStillConnected = true;
+                        if (videoIsStillConnected && audioIsStillConnected)
+                            break;
+                    }
                 }
 
                 if (!audioIsStillConnected || !videoIsStillConnected) {
-                    let mediaError = { Type: 2, Message: "Audio Device used is disconnected." }
-                    if (!videoIsStillConnected)
+
+                    let mediaError = { Type: 2, Message: "" };
+                    if (videoIsStillConnected)
+                        mediaError.Message = "Audio Device used is disconnected.";
+                    else if (audioIsStillConnected)
                         mediaError.Message = "Video Device used is disconnected.";
-                    if (!videoIsStillConnected && !audioIsStillConnected)
+                    else
                         mediaError.Message = "Audio and Video Device used is disconnected.";
                     componentRef.invokeMethodAsync("ReceiveError", mediaError);
                 }
@@ -206,6 +210,17 @@ namespace BlazorMedia {
                     BlazorMediaInterop.Destroy(videoElement);
                 }
             }
+        }
+
+        static async GetInputMediaDevices() {
+            let devices = await navigator.mediaDevices.enumerateDevices();
+            let inputDevices = [];
+            for (let i = 0; i < devices.length; i++) {
+                if (devices[i].kind == "audioinput" || devices[i].kind == "videoinput") {
+                    inputDevices.push(devices[i]);
+                }
+            }
+            return inputDevices;
         }
 
     }
