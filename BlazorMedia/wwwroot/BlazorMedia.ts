@@ -56,6 +56,13 @@ namespace BlazorMedia {
                 BlazorMediaInterop.constraints.audio = false;
             }
 
+            let mediaRecorderOptions;
+            
+            if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus"))
+            {
+                mediaRecorderOptions = { mimeType: "video/webm;codecs=vp8,opus" };
+            }
+
             BlazorMediaInterop.Destroy(videoElement);
 
             try {
@@ -67,7 +74,7 @@ namespace BlazorMedia {
 
                 let receiveStarted = false;
                 var textDecoder = new TextDecoder("windows-1252");
-                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream, { mimeType: "video/webm;codecs=vp8" });
+                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream, mediaRecorderOptions);
                 videoElement.mediaRecorder.ondataavailable = async (e) => {
                     if(!receiveStarted) 
                     {
