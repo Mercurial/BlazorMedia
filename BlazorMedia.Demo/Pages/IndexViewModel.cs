@@ -30,6 +30,7 @@ namespace BlazorMedia.Demo
 		protected int BytesInSecond { get; set; }
 		protected DateTime lastBitRateData { get; set; } = DateTime.Now;
 		protected string PictureData { get; set; }
+
 		protected override async Task OnInitializedAsync()
 		{
 			BlazorMediaAPI = new BlazorMediaAPI(JSRuntime);
@@ -43,9 +44,9 @@ namespace BlazorMedia.Demo
 				await BlazorMediaAPI.StartDeviceChangeListenerAsync();
 				await FetchDeviceListAsync();
 				BlazorMediaAPI.DeviceChanged += BlazorMedia_DeviceChanged;
+				await InvokeAsync(StateHasChanged);
 			}
 			await base.OnAfterRenderAsync(firstRender);
-			await InvokeAsync(StateHasChanged);
 		}
 
 		protected void OnData(byte[] data)

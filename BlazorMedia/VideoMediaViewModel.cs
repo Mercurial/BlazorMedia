@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using BlazorMedia.Models;
+using System.Text;
 
 namespace BlazorMedia
 {
@@ -76,6 +77,8 @@ namespace BlazorMedia
 
 		protected BlazorMediaAPI BlazorMediaAPI { get; set; }
 
+		private Encoding ANSIEncoder { get; set; }
+
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
@@ -89,6 +92,8 @@ namespace BlazorMedia
 		{
 			if (!IsInitialized)
 			{
+            	Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+				ANSIEncoder =  Encoding.GetEncoding(1252);
 				BlazorMediaAPI = new BlazorMediaAPI(JS);
 				await ReloadAsync();
 				IsInitialized = true;
@@ -96,13 +101,12 @@ namespace BlazorMedia
 		}
 
 		[JSInvokable]
-		public void ReceiveData(int[] data)
+		public void ReceiveData(string data)
 		{
 			if (OnData.HasDelegate)
 			{
-				/// @TODO: C# Blazor wont accept ArrayUint8 from JS so we pass the binary data as int[] and convert to byte[]
-				byte[] buffer = data.Select(i => (byte)i).ToArray();
-				OnData.InvokeAsync(buffer);
+				byte[] byteArray = ANSIEncoder.GetBytes(data);
+                OnData.InvokeAsync(byteArray);
 			}
 		}
 
