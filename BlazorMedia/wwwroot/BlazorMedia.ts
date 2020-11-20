@@ -56,6 +56,13 @@ namespace BlazorMedia {
                 BlazorMediaInterop.constraints.audio = false;
             }
 
+            let mediaRecorderOptions;
+            
+            if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus"))
+            {
+                mediaRecorderOptions = { mimeType: "video/webm;codecs=vp8,opus" };
+            }
+
             BlazorMediaInterop.Destroy(videoElement);
 
             try {
@@ -63,12 +70,21 @@ namespace BlazorMedia {
                 videoElement.bmHeight = height;
                 videoElement.mediaStream = await navigator.mediaDevices.getUserMedia(BlazorMediaInterop.constraints);
                 videoElement.srcObject = videoElement.mediaStream;
-                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
                 videoElement.volume = 0;
+
+                let receiveStarted = false;
+                var textDecoder = new TextDecoder("windows-1252");
+                videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream, mediaRecorderOptions);
                 videoElement.mediaRecorder.ondataavailable = async (e) => {
-                    let uintArr = new Uint8Array(await new Response(e.data).arrayBuffer());
-                    let buffer = Array.from(uintArr);
-                    componentRef.invokeMethodAsync("ReceiveData", buffer);
+                    if(!receiveStarted) 
+                    {
+                        componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
+                        receiveStarted = true;
+                    }
+                    let arrBuffer = await new Response(e.data).arrayBuffer();
+                    let uintArr = new Uint8Array(arrBuffer);
+                    let bufferString = textDecoder.decode(uintArr);
+                    componentRef.invokeMethodAsync("ReceiveData", bufferString);
                 };
 
                 videoElement.mediaRecorder.onerror = async (e: MediaRecorderErrorEvent) => {
@@ -77,9 +93,6 @@ namespace BlazorMedia {
                     BlazorMediaInterop.Destroy(videoElement);
                 };
 
-                videoElement.mediaRecorder.onstart = () => {
-                    componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
-                };
                 videoElement.mediaRecorder.start(timeslice);
                 BlazorMediaInterop.DetectMediaDeviceUsedDisconnection(videoElement, componentRef);
             }
