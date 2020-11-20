@@ -49,7 +49,7 @@ var BlazorMedia;
             if (microphoneDeviceId === void 0) { microphoneDeviceId = ""; }
             if (timeslice === void 0) { timeslice = 0; }
             return __awaiter(this, void 0, void 0, function () {
-                var _a, exception_1, mediaError;
+                var mediaRecorderOptions, _a, receiveStarted_1, textDecoder, exception_1, mediaError;
                 var _this = this;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
@@ -74,6 +74,9 @@ var BlazorMedia;
                             if (canCaptureAudio == false || microphoneDeviceId.length == 0) {
                                 BlazorMediaInterop.constraints.audio = false;
                             }
+                            if (MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")) {
+                                mediaRecorderOptions = { mimeType: "video/webm;codecs=vp8,opus" };
+                            }
                             BlazorMediaInterop.Destroy(videoElement);
                             _b.label = 1;
                         case 1:
@@ -85,19 +88,25 @@ var BlazorMedia;
                         case 2:
                             _a.mediaStream = _b.sent();
                             videoElement.srcObject = videoElement.mediaStream;
-                            videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream);
                             videoElement.volume = 0;
+                            receiveStarted_1 = false;
+                            textDecoder = new TextDecoder("windows-1252");
+                            videoElement.mediaRecorder = new MediaRecorder(videoElement.mediaStream, mediaRecorderOptions);
                             videoElement.mediaRecorder.ondataavailable = function (e) { return __awaiter(_this, void 0, void 0, function () {
-                                var uintArr, _a, buffer;
-                                return __generator(this, function (_b) {
-                                    switch (_b.label) {
+                                var arrBuffer, uintArr, bufferString;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
                                         case 0:
-                                            _a = Uint8Array.bind;
+                                            if (!receiveStarted_1) {
+                                                componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
+                                                receiveStarted_1 = true;
+                                            }
                                             return [4 /*yield*/, new Response(e.data).arrayBuffer()];
                                         case 1:
-                                            uintArr = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
-                                            buffer = Array.from(uintArr);
-                                            componentRef.invokeMethodAsync("ReceiveData", buffer);
+                                            arrBuffer = _a.sent();
+                                            uintArr = new Uint8Array(arrBuffer);
+                                            bufferString = textDecoder.decode(uintArr);
+                                            componentRef.invokeMethodAsync("ReceiveData", bufferString);
                                             return [2 /*return*/];
                                     }
                                 });
@@ -111,9 +120,6 @@ var BlazorMedia;
                                     return [2 /*return*/];
                                 });
                             }); };
-                            videoElement.mediaRecorder.onstart = function () {
-                                componentRef.invokeMethodAsync("ReceiveStart", videoElement.videoWidth, videoElement.videoHeight);
-                            };
                             videoElement.mediaRecorder.start(timeslice);
                             BlazorMediaInterop.DetectMediaDeviceUsedDisconnection(videoElement, componentRef);
                             return [3 /*break*/, 4];
