@@ -11,7 +11,7 @@
     <LangVersion>9.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>0.4.0.1</Version>
+    <Version>0.4.0.2</Version>
     <Authors>Rory Clark Manuelle Alesna, Nestor Angelo Tan, Perkins Jon Ong</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
