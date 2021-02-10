@@ -23,6 +23,12 @@ jobs:
         # Run tests
         - name: Test
           run: dotnet test
+          
+        # Install NPM packages
+        - name: Npm
+          run: |
+            cd ./Blazormedia |
+            npm install
 
         # Generate the website
         - name: Publish
