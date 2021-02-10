@@ -24,7 +24,7 @@ jobs:
         - name: Publish
           run: |
             npm --prefix ./BlazorMedia install ./BlazorMedia |
-            dotnet publish BlazorMedia.Demo/BlazorMedia.Demo.csproj --configuration Release --output build
+            dotnet publish BlazorMedia.Demo.WASM/BlazorMedia.Demo.WASM.csproj --configuration Release --output build
 
         # Publish the website
         - name: GitHub Pages action
