@@ -22,7 +22,6 @@ jobs:
 
         # Generate the website
         - name: Publish
-        - working-directory: ./app
           run: |
             npm --prefix ./BlazorMedia install ./BlazorMedia |
             dotnet publish BlazorMedia.Demo/BlazorMedia.Demo.csproj --configuration Release --output build
