@@ -23,7 +23,7 @@ jobs:
         # Generate the website
         - name: Publish
           run: |
-            cd ./Blazormedia |
+            cd ./BlazorMedia |
             npm install |
             cd .. |
             dotnet publish BlazorMedia.Demo/BlazorMedia.Demo.csproj --configuration Release --output build
