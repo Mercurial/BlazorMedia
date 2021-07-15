@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMedia", "BlazorMedia\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMedia.Demo", "BlazorMedia.Demo\BlazorMedia.Demo.csproj", "{531F3F53-E031-477F-BAE5-0FCA1E8AEAF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMedia.Demo.WASM", "BlazorMedia.Demo.WASM\BlazorMedia.Demo.WASM.csproj", "{BBB8DE1E-9C16-4FE8-9FD2-D3DD837A26A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{531F3F53-E031-477F-BAE5-0FCA1E8AEAF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{531F3F53-E031-477F-BAE5-0FCA1E8AEAF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{531F3F53-E031-477F-BAE5-0FCA1E8AEAF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBB8DE1E-9C16-4FE8-9FD2-D3DD837A26A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBB8DE1E-9C16-4FE8-9FD2-D3DD837A26A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBB8DE1E-9C16-4FE8-9FD2-D3DD837A26A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBB8DE1E-9C16-4FE8-9FD2-D3DD837A26A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

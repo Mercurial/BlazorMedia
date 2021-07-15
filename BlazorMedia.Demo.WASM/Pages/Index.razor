@@ -1,0 +1,72 @@
+﻿@page "/"
+
+<div>
+    FPS: @FPS, KBps: @KBps
+</div>
+<div style="display: flex; flex-direction: row; width: calc(100vw - 280px);">
+    @* Wait for Selected device to be set *@
+    @if (SelectedCamera.Length > 0)
+    {
+        <VideoMedia @ref="VideoMediaComponent"
+                    Style="flex-basis: 50%; width: 50%;"
+                    OnData="OnData"
+                    OnError="OnError"
+                    OnFPS="OnFPS"
+                    OnInitialize="OnInitialize"
+                    Timeslice="100"
+                    Width="@Width"
+                    Height="@Height"
+                    RecordAudio="true"
+                    CameraDeviceId="@SelectedCamera"
+                    MicrophoneDeviceId="@SelectedMicrophone"
+                    Framerate="@Framerate" />
+    }
+    <img src="@PictureData" style="flex-basis: 50%; width: 50%;" />
+</div>
+<div>
+    <button @onclick="OnTakePhotoPressed">Take Photo</button>
+    <button @onclick="OnToggleRecordingPressed">Reload</button>
+</div>
+<div>
+    <label for="framerate">Framerate: </label>
+    <input type="text" @bind-value="Framerate" />
+</div>
+<div>
+    <label for="quality">Quality: </label>
+    <select id="quality" value="@SelectedQuality" @onchange="OnQualitySelected">
+        <option value="320x240">240p</option>
+        <option value="480x360">360p</option>
+        <option value="852x480">480p</option>
+        <option value="1280x720">720p</option>
+        <option selected value="1920x1080">1080p</option>
+        <option value="3860x2160">4K</option>
+    </select>
+    <p>Selected Quality:@SelectedQuality</p>
+    <p>Effective Quality: @($"{EffectiveWidth}x{EffectiveHeight}")</p>
+</div>
+@if (Cameras.Count > 0)
+{
+    <div>
+        <label for="cameras">Cameras: </label>
+        <select id="cameras" value="@SelectedCamera" @onchange="OnCameraSelected">
+            @foreach (MediaDeviceInfo mdi in Cameras)
+            {
+                <option value="@mdi.DeviceId">@mdi.Name</option>
+            }
+        </select>
+        <p>Selected Camera:@(SelectedCamera)</p>
+    </div>
+}
+@if (Microphones.Count > 0)
+{
+    <div>
+        <label for="microphones">Microphones: </label>
+        <select id="microphones" value="@SelectedMicrophone" @onchange="OnMicrophoneSelected">
+            @foreach (MediaDeviceInfo mdi in Microphones)
+            {
+                <option value="@mdi.DeviceId">@mdi.Name</option>
+            }
+        </select>
+        <p>Selected Microphone:@(SelectedMicrophone)</p>
+    </div>
+}
